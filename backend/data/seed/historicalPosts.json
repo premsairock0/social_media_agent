@@ -1,0 +1,142 @@
+[
+  {
+    "topic": "AI Agent Memory Architecture",
+    "style": "Personal Technical Story",
+    "hook": "We spent 3 weeks rebuilding our multi-agent memory pipeline. Here's why simple vector search failed us:",
+    "content": "We spent 3 weeks rebuilding our multi-agent memory pipeline. Here's why simple vector search failed us:\n\nWhen we launched our first agent, semantic search worked fine for 50 documents. But as soon as users started asking about temporal context ('what did we decide last Tuesday?'), standard RAG collapsed.\n\nHere are 3 architectural shifts we made:\n1. Episodic vs. Semantic splitting\n2. Reflection loops on task completion\n3. Structured state cache alongside agent memory\n\nIf you're building agents today, don't treat vector DBs as human memory. They are fundamentally different.",
+    "metrics": { "likes": 520, "comments": 61, "shares": 42, "impressions": 12400 }
+  },
+  {
+    "topic": "Product Release",
+    "style": "Corporate Feature Announcement",
+    "hook": "Excited to share that SocialMind v1.2 is officially live with new dashboard widgets!",
+    "content": "Excited to share that SocialMind v1.2 is officially live with new dashboard widgets!\n\nOur team has been working around the clock to deliver a faster experience. Check out our website to learn more and sign up for a 14-day free trial today.\n\nLink in comments!",
+    "metrics": { "likes": 48, "comments": 4, "shares": 1, "impressions": 4800 }
+  },
+  {
+    "topic": "Founder Journey & Failure",
+    "style": "Vulnerable Founder Reflection",
+    "hook": "I almost shut down our startup 6 months ago. The metric that saved us wasn't MRR.",
+    "content": "I almost shut down our startup 6 months ago. The metric that saved us wasn't MRR.\n\nIt was weekly retention of power users. We were obsessing over top-of-funnel signups, but ignoring the fact that our best 10 users were using the product 4 hours a day.\n\nWhen we pivoted our roadmap solely to delight those 10 people, word of mouth kicked in.\n\nLesson: Find your obsessive 1%, and build exclusively for them first.",
+    "metrics": { "likes": 840, "comments": 94, "shares": 68, "impressions": 19200 }
+  },
+  {
+    "topic": "Generic AI Advice",
+    "style": "Listicle / Curated Tools",
+    "hook": "Top 10 AI tools you MUST use in 2026 to 10x your productivity:",
+    "content": "Top 10 AI tools you MUST use in 2026 to 10x your productivity:\n\n1. Tool A\n2. Tool B\n3. Tool C\n4. Tool D\n5. Tool E\n\nSave this post for later and comment 'AI' to get the full list in your DM!",
+    "metrics": { "likes": 85, "comments": 12, "shares": 3, "impressions": 6100 }
+  },
+  {
+    "topic": "Engineering Culture",
+    "style": "Contrarian Opinion",
+    "hook": "Stop doing daily 30-minute standups. You're draining your senior engineers.",
+    "content": "Stop doing daily 30-minute standups. You're draining your senior engineers.\n\nInstead, switch to asynchronous Slack check-ins with 3 questions:\n1. What shipped yesterday?\n2. What's blocking you today?\n3. Who do you need a 5-min sync with?\n\nOur team reclaimed 15 engineering hours per person each month.\n\nHow does your team handle daily syncs?",
+    "metrics": { "likes": 610, "comments": 138, "shares": 52, "impressions": 15600 }
+  },
+  {
+    "topic": "Database Optimization",
+    "style": "Technical Deep-Dive",
+    "hook": "Our MongoDB cluster hit 99% CPU during launch week. One missing compound index cost us $4,200.",
+    "content": "Our MongoDB cluster hit 99% CPU during launch week. One missing compound index cost us $4,200.\n\nWe were querying posts by brandId and sorting by createdAt descending. Without `{ brandId: 1, createdAt: -1 }`, Mongo was doing full collection in-memory sorts for every user dashboard render.\n\nOnce added, query latency dropped from 1,200ms to 4ms, and cluster CPU stabilized at 12%.\n\nNever deploy query pipelines without inspecting `.explain('executionStats')` first.",
+    "metrics": { "likes": 470, "comments": 54, "shares": 39, "impressions": 11800 }
+  },
+  {
+    "topic": "Webinar Promotion",
+    "style": "Promotional Invitation",
+    "hook": "Join our upcoming live webinar: 'The Future of Social AI Agents' this Thursday at 3 PM EST!",
+    "content": "Join our upcoming live webinar: 'The Future of Social AI Agents' this Thursday at 3 PM EST!\n\nWe will have industry experts discussing the latest trends and breakthroughs. Limited seats available!\n\nRegister now via the link in the first comment below.",
+    "metrics": { "likes": 32, "comments": 3, "shares": 0, "impressions": 3900 }
+  },
+  {
+    "topic": "System Architecture",
+    "style": "Behind-the-Scenes Case Study",
+    "hook": "How we decreased our LLM token costs by 64% without losing response quality:",
+    "content": "How we decreased our LLM token costs by 64% without losing response quality:\n\n1. Dynamic prompt pruning: We stripped conversational history older than 3 turns into a single summary vector.\n2. Model routing: Simple classification tasks run on Flash (cheap & fast); only synthesis and strategy run on Pro models.\n3. Semantic caching for repeated intent patterns.\n\nResult: Lower latency, lower bills, happier users.\n\nWhat is your team doing to control inference costs?",
+    "metrics": { "likes": 730, "comments": 82, "shares": 65, "impressions": 17400 }
+  },
+  {
+    "topic": "Company Award",
+    "style": "Corporate PR & Awards",
+    "hook": "We are honored to be named one of the Top 50 Emerging AI Startups by TechInsider!",
+    "content": "We are honored to be named one of the Top 50 Emerging AI Startups by TechInsider!\n\nA huge thank you to our incredible team, investors, and customers who made this possible. We are just getting started on this incredible journey.\n\nOnwards and upwards! 🚀",
+    "metrics": { "likes": 62, "comments": 7, "shares": 1, "impressions": 5200 }
+  },
+  {
+    "topic": "Hiring & Talent",
+    "style": "Transparent Hiring Philosophy",
+    "hook": "We stopped asking LeetCode hard problems in technical interviews. Here is what we do instead:",
+    "content": "We stopped asking LeetCode hard problems in technical interviews. Here is what we do instead:\n\nWe give candidates a broken 150-line Express service with real bugs (race conditions, unhandled rejections, and missing indexes). We pair program with them for 45 minutes to debug it.\n\nWe learn:\n• How they communicate when stuck\n• How they read production logs\n• How they verify assumptions\n\nOur engineering offer acceptance rate rose from 60% to 92%.",
+    "metrics": { "likes": 890, "comments": 164, "shares": 81, "impressions": 22100 }
+  },
+  {
+    "topic": "General Industry News",
+    "style": "Curated News Digest",
+    "hook": "3 major AI announcements from yesterday that every developer should know:",
+    "content": "3 major AI announcements from yesterday that every developer should know:\n\n1. New open weights model release\n2. Speculative decoding speedups\n3. Memory benchmark frameworks\n\nWhich of these are you testing in your stack?",
+    "metrics": { "likes": 180, "comments": 19, "shares": 11, "impressions": 7900 }
+  },
+  {
+    "topic": "Open Source Launch",
+    "style": "Engineering Community Contribution",
+    "hook": "Today we are open-sourcing our internal memory benchmark suite for LLM agents:",
+    "content": "Today we are open-sourcing our internal memory benchmark suite for LLM agents:\n\nMost existing evals test basic chunk recall. Our suite tests:\n• Temporal reasoning over conversations\n• Contradiction resolution when past facts change\n• Multi-hop synthesis across distant sessions\n\nGitHub repo link in bio. PRs and feedback welcome!",
+    "metrics": { "likes": 650, "comments": 71, "shares": 59, "impressions": 16100 }
+  },
+  {
+    "topic": "Product Demo Video",
+    "style": "Direct Sales Pitch",
+    "hook": "Watch this 2-minute demo to see why your team needs our platform today:",
+    "content": "Watch this 2-minute demo to see why your team needs our platform today:\n\nWe automate repetitive tasks and save your sales team 10 hours every week. Contact our sales team today to book a customized enterprise demo.\n\nLink in comments to book a call!",
+    "metrics": { "likes": 38, "comments": 2, "shares": 0, "impressions": 4100 }
+  },
+  {
+    "topic": "Production Incident Post-Mortem",
+    "style": "Transparent Post-Mortem",
+    "hook": "How a single uncaught Promise rejection caused 28 minutes of API downtime yesterday:",
+    "content": "How a single uncaught Promise rejection caused 28 minutes of API downtime yesterday:\n\nAt 14:15 UTC, our worker process crashed repeatedly because a background webhook fired without a try/catch block. In Node 20+, unhandled rejections terminate the process by default.\n\nWhat went wrong:\n1. Health check was green because the main web server was up\n2. PM2 restart limit was exceeded on the worker\n\nFix applied: Added process-level safety boundaries and isolated queue workers into separate Docker containers.\n\nPost-mortem shared openly because reliability is built in daylight.",
+    "metrics": { "likes": 780, "comments": 105, "shares": 72, "impressions": 18900 }
+  },
+  {
+    "topic": "Holiday Greetings",
+    "style": "Generic Holiday Greeting",
+    "hook": "Happy New Year from all of us at SocialMind! Wishing you success in 2026!",
+    "content": "Happy New Year from all of us at SocialMind! Wishing you success in 2026!\n\nMay your year be filled with growth, joy, and breakthroughs. Let's make this year great together!\n\n#HappyNewYear #Growth",
+    "metrics": { "likes": 42, "comments": 5, "shares": 0, "impressions": 3800 }
+  },
+  {
+    "topic": "Prompt Engineering",
+    "style": "Actionable Framework",
+    "hook": "The 'Chain-of-Density' prompt pattern that doubled our automated summary accuracy:",
+    "content": "The 'Chain-of-Density' prompt pattern that doubled our automated summary accuracy:\n\nInstead of asking the LLM to summarize once, you prompt it over 5 progressive iterations:\n• Step 1: Write an initial draft containing 1-3 key entities.\n• Steps 2-5: Compress the length while adding 1-3 missing salient entities without increasing word count.\n\nThe resulting summaries are dense, highly informative, and contain zero fluff.\n\nFull prompt template in the snippet below. Try it on your next document analysis pipeline.",
+    "metrics": { "likes": 690, "comments": 89, "shares": 64, "impressions": 16800 }
+  },
+  {
+    "topic": "Motivational Quote",
+    "style": "Inspirational Generic Advice",
+    "hook": "'Success is not final, failure is not fatal: it is the courage to continue that counts.'",
+    "content": "'Success is not final, failure is not fatal: it is the courage to continue that counts.'\n\nRemember this as you start your work week. Keep pushing forward and never give up on your dreams!\n\nAgree? Drop a '100' below! 👇",
+    "metrics": { "likes": 55, "comments": 8, "shares": 1, "impressions": 5100 }
+  },
+  {
+    "topic": "Agentic Evaluation",
+    "style": "Benchmark Experiment",
+    "hook": "We ran 500 autonomous agent tasks across 3 LLM models. Here are the failure rates:",
+    "content": "We ran 500 autonomous agent tasks across 3 LLM models. Here are the failure rates:\n\n• Tool hallucination: 18% in baseline models vs. 3% when using strict schema validation.\n• Infinite retry loops: 24% when agents are not given an explicit step quota.\n• State drift: 31% after 10+ conversation turns without memory consolidation.\n\nTakeaway: Agent autonomy is 20% prompt engineering and 80% deterministic guardrails.",
+    "metrics": { "likes": 810, "comments": 128, "shares": 79, "impressions": 20400 }
+  },
+  {
+    "topic": "Partnership Announcement",
+    "style": "Corporate Partnership",
+    "hook": "We are proud to announce our strategic integration with CloudTech Partners!",
+    "content": "We are proud to announce our strategic integration with CloudTech Partners!\n\nThis partnership empowers enterprise teams to deploy our tools seamlessly across multi-cloud environments. Read the official press release on our blog.\n\nExciting times ahead!",
+    "metrics": { "likes": 51, "comments": 4, "shares": 1, "impressions": 4600 }
+  },
+  {
+    "topic": "Technical Debt",
+    "style": "Contrarian Architecture",
+    "hook": "Why we deleted 12,000 lines of microservices code and went back to a modular monolith:",
+    "content": "Why we deleted 12,000 lines of microservices code and went back to a modular monolith:\n\nWith 4 engineers, managing 8 repositories, Docker compose files, Kubernetes manifests, and gRPC contracts was taking 40% of our week.\n\nWe consolidated into a single clean Node/TypeScript monorepo with domain boundaries.\n\nResults:\n• CI/CD build time dropped from 14 mins to 90 seconds\n• Zero distributed transaction bugs\n• Faster onboarding for every new hire\n\nDon't adopt Google-scale architectural complexity before you have Google-scale engineering headcount.",
+    "metrics": { "likes": 960, "comments": 182, "shares": 93, "impressions": 24500 }
+  }
+]
