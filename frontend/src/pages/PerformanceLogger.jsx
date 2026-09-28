@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useContent } from '../context/ContentContext';
-import { recordPerformance, getPosts } from '../services/api';
+import { recordPerformance } from '../services/api';
 import FormattedText from '../components/common/FormattedText';
 import { 
   TrendingUp, 
@@ -25,9 +25,6 @@ export default function PerformanceLogger() {
     content: contextResult.generatedPost || '',
   } : null);
 
-  const [postsList, setPostsList] = useState([]);
-  const [selectedPostId, setSelectedPostId] = useState('');
-
   const [formData, setFormData] = useState({
     topic: prefill?.topic || 'AI Agent Software Testing Automation',
     style: prefill?.style || 'Technical Retrospective',
@@ -43,32 +40,6 @@ export default function PerformanceLogger() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    // Fetch posts so user can select an existing one
-    getPosts()
-      .then((res) => {
-        setPostsList(res.data.data || []);
-      })
-      .catch((err) => console.log('Could not fetch posts for dropdown:', err));
-  }, []);
-
-  const handleSelectPost = (e) => {
-    const pId = e.target.value;
-    setSelectedPostId(pId);
-    if (!pId) return;
-
-    const found = postsList.find((p) => p._id === pId);
-    if (found) {
-      setFormData((prev) => ({
-        ...prev,
-        topic: found.topic,
-        style: found.style,
-        hook: found.hook || '',
-        content: found.content || '',
-      }));
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -77,7 +48,6 @@ export default function PerformanceLogger() {
 
     try {
       const response = await recordPerformance({
-        postId: selectedPostId || undefined,
         topic: formData.topic,
         style: formData.style,
         hook: formData.hook,
@@ -116,25 +86,6 @@ export default function PerformanceLogger() {
       {/* Form Card */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5">
         <form onSubmit={handleSubmit} className="space-y-4">
-          {postsList.length > 0 && (
-            <div>
-              <label className="text-xs font-semibold text-slate-600 mb-1.5 block">
-                Select Existing Post (Optional)
-              </label>
-              <select
-                value={selectedPostId}
-                onChange={handleSelectPost}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-white"
-              >
-                <option value="">-- Choose a post or enter custom details below --</option>
-                {postsList.map((p) => (
-                  <option key={p._id} value={p._id}>
-                    {p.topic} ({p.style})
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>

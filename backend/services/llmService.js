@@ -87,7 +87,30 @@ You MUST respond strictly in valid JSON matching this schema:
   "structure": "Step-by-step structural outline of the post",
   "thingsToAvoid": "Specific pitfalls or patterns to avoid based on past flops and truthfulness rules",
   "whyThisStrategy": "Explicit explanation citing how the recalled Hindsight memories influenced this strategy",
-  "generatedPost": "The complete, ready-to-publish LinkedIn post formatted with clean line breaks"
+  "generatedPost": "The complete, ready-to-publish LinkedIn post formatted with clean line breaks",
+  "optimalPostingTime": {
+    "bestDays": ["Tuesday", "Wednesday", "Thursday"],
+    "bestTimeSlot": "8:15 AM - 9:30 AM (Local Time)",
+    "audienceReasoning": "Why this time window maximizes visibility for this target audience"
+  },
+  "alternativeStrategies": [
+    {
+      "name": "Contrarian Debate Angle",
+      "angle": "Challenge common industry assumptions to spark high comment activity",
+      "hook": "Sharp debate-driving hook line",
+      "structure": "Unpopular observation → Technical evidence → Thought-provoking question",
+      "recommendedTime": "Wednesday at 12:30 PM (Mid-day discussion window)",
+      "generatedPost": "Adapted LinkedIn post focusing on sparking technical debate"
+    },
+    {
+      "name": "Actionable Engineering Playbook",
+      "angle": "Tactical, step-by-step checklist that readers bookmark and share",
+      "hook": "Clear problem-solving hook line",
+      "structure": "The recurring problem → 3 actionable steps → Key takeaway",
+      "recommendedTime": "Thursday at 8:30 AM (Morning focus window)",
+      "generatedPost": "Adapted LinkedIn post formatted with structured bullet points"
+    }
+  ]
 }`;
 
     const userPrompt = `Brand: ${brand.name || 'Tech Company'}

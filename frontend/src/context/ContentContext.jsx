@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { PREPROMPTS } from '../data/preprompts';
 
 const ContentContext = createContext(null);
 
-const DEFAULT_IDEA = 'Create a LinkedIn post about our new AI agent that automates software testing.';
-const DEFAULT_GOAL = 'Engagement & Technical Discussion';
-const DEFAULT_AUDIENCE = 'Software Engineers, QA Leads, Tech Founders';
+const DEFAULT_IDEA = PREPROMPTS[0].idea;
+const DEFAULT_GOAL = PREPROMPTS[0].goal;
+const DEFAULT_AUDIENCE = PREPROMPTS[0].audience;
 
 const STORAGE_KEYS = {
   IDEA: 'socialmind_idea',
@@ -92,6 +93,13 @@ export function ContentProvider({ children }) {
     }
   };
 
+  const applyPreprompt = (preprompt) => {
+    if (!preprompt) return;
+    setIdea(preprompt.idea);
+    if (preprompt.goal) setGoal(preprompt.goal);
+    if (preprompt.audience) setAudience(preprompt.audience);
+  };
+
   const clearResult = () => {
     setResult(null);
   };
@@ -116,6 +124,7 @@ export function ContentProvider({ children }) {
         setResult,
         clearResult,
         resetAll,
+        applyPreprompt,
       }}
     >
       {children}
