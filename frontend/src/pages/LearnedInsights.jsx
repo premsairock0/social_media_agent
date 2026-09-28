@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getMemories, getReflection } from '../services/api';
+import FormattedText from '../components/common/FormattedText';
 import { 
   BrainCircuit, 
   CheckCircle2, 
@@ -7,8 +8,7 @@ import {
   RefreshCw, 
   AlertCircle, 
   Sparkles,
-  BookOpen,
-  Filter
+  BookOpen
 } from 'lucide-react';
 
 export default function LearnedInsights() {
@@ -89,8 +89,11 @@ export default function LearnedInsights() {
             SocialMind is synthesizing strategic patterns across all retained experiences...
           </div>
         ) : reflection ? (
-          <div className="prose prose-sm max-w-none text-xs text-slate-700 leading-relaxed font-sans bg-slate-50 p-5 rounded-lg border border-slate-200 whitespace-pre-wrap">
-            {reflection}
+          <div className="bg-slate-50 p-5 rounded-lg border border-slate-200">
+            <FormattedText 
+              text={reflection} 
+              className="text-xs text-slate-700 leading-relaxed font-sans" 
+            />
           </div>
         ) : (
           <p className="text-xs text-slate-400 py-4 text-center">
@@ -138,9 +141,10 @@ export default function LearnedInsights() {
                     )}
                   </div>
                   <div className="flex-1 space-y-1">
-                    <p className="text-slate-800 leading-relaxed font-medium">
-                      {mem.content}
-                    </p>
+                    <FormattedText 
+                      text={mem.content} 
+                      className="text-xs text-slate-800 leading-relaxed font-medium font-sans" 
+                    />
                     {mem.date && (
                       <span className="block text-[10px] text-slate-400 font-mono">
                         Indexed: {new Date(mem.date).toLocaleDateString()}

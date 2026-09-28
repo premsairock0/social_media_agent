@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useContent } from '../context/ContentContext';
 import { generateStrategy } from '../services/api';
+import FormattedText from '../components/common/FormattedText';
 import { 
   Sparkles, 
   BrainCircuit, 
@@ -10,25 +12,30 @@ import {
   AlertCircle, 
   Bookmark, 
   HelpCircle,
-  Lightbulb
+  Lightbulb,
+  RotateCcw,
+  Trash2
 } from 'lucide-react';
 
 export default function CreateContent() {
   const navigate = useNavigate();
-
-  const [idea, setIdea] = useState(
-    'Create a LinkedIn post about our new AI agent that automates software testing.'
-  );
-  const [goal, setGoal] = useState('Engagement & Technical Discussion');
-  const [audience, setAudience] = useState('Software Engineers, QA Leads, Tech Founders');
+  const { 
+    idea, 
+    setIdea, 
+    goal, 
+    setGoal, 
+    audience, 
+    setAudience, 
+    result, 
+    setResult, 
+    clearResult,
+    resetAll 
+  } = useContent();
   
   // Loading & Multi-Stage indicator
   const [loading, setLoading] = useState(false);
   const [loadingStage, setLoadingStage] = useState('');
   const [error, setError] = useState(null);
-
-  // Result state
-  const [result, setResult] = useState(null);
   const [copied, setCopied] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -37,9 +44,8 @@ export default function CreateContent() {
 
     setLoading(true);
     setError(null);
-    setResult(null);
 
-    // Simulated multi-stage loading progression for hackathon transparency
+    // Multi-stage loading progression for cognitive pipeline transparency
     setLoadingStage('SocialMind is recalling what worked before from Hindsight...');
     const stageTimer1 = setTimeout(() => {
       setLoadingStage('SocialMind is reasoning from past audience experiences with LLM...');
@@ -97,13 +103,27 @@ export default function CreateContent() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="border-b border-slate-200 pb-5">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-          Create Content with Hindsight
-        </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          SocialMind queries long-term memory to recall previous audience responses before writing a single word.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-5">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            Create Content with Hindsight
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">
+            SocialMind queries long-term memory to recall previous audience responses before writing a single word.
+          </p>
+        </div>
+
+        {result && (
+          <button
+            type="button"
+            onClick={clearResult}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition-colors shadow-sm self-start sm:self-auto"
+            title="Clear the generated draft to create a fresh post"
+          >
+            <Trash2 className="h-3.5 w-3.5 text-slate-400" />
+            <span>Clear Output</span>
+          </button>
+        )}
       </div>
 
       {/* Input Form Card */}
@@ -114,13 +134,25 @@ export default function CreateContent() {
               <label className="text-xs font-bold uppercase tracking-wider text-slate-700">
                 What do you want to post about? *
               </label>
-              <button
-                type="button"
-                onClick={() => setIdea('Create a LinkedIn post about our new AI agent that automates software testing.')}
-                className="text-[11px] text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Use Testing Agent Example
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIdea('Create a LinkedIn post about our new AI agent that automates software testing.')}
+                  className="text-[11px] text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  Use Testing Agent Example
+                </button>
+                <span className="text-slate-300">|</span>
+                <button
+                  type="button"
+                  onClick={resetAll}
+                  className="text-[11px] text-slate-500 hover:text-slate-700 font-medium flex items-center gap-1"
+                  title="Reset form to defaults"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                  <span>Reset</span>
+                </button>
+              </div>
             </div>
             <textarea
               required
@@ -177,7 +209,7 @@ export default function CreateContent() {
               ) : (
                 <>
                   <Sparkles className="h-4 w-4" />
-                  <span>Generate Strategy</span>
+                  <span>{result ? 'Regenerate Strategy' : 'Generate Strategy'}</span>
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
@@ -235,7 +267,7 @@ export default function CreateContent() {
                 >
                   <span className="font-mono text-blue-600 font-bold shrink-0">#{idx + 1}</span>
                   <div className="flex-1 space-y-1">
-                    <p className="leading-relaxed">{mem.content}</p>
+                    <FormattedText text={mem.content} className="text-xs text-slate-800 leading-relaxed font-sans" />
                     {mem.relevanceScore !== undefined && (
                       <span className="inline-block text-[10px] text-slate-500 font-mono">
                         Relevance: {Number(mem.relevanceScore).toFixed(3)}
@@ -263,36 +295,36 @@ export default function CreateContent() {
                   <span className="text-xs font-semibold text-slate-500 block mb-1">
                     Content Angle & Style
                   </span>
-                  <p className="text-xs font-medium text-slate-800 bg-slate-50 p-2.5 rounded border border-slate-200">
-                    {result.strategy}
-                  </p>
+                  <div className="text-xs text-slate-800 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                    <FormattedText text={result.strategy} className="text-xs font-medium text-slate-800" />
+                  </div>
                 </div>
 
                 <div>
                   <span className="text-xs font-semibold text-slate-500 block mb-1">
                     Recommended Hook
                   </span>
-                  <p className="text-xs font-mono text-blue-900 bg-blue-50/70 p-2.5 rounded border border-blue-200">
-                    "{result.hook}"
-                  </p>
+                  <div className="text-xs font-sans text-blue-950 bg-blue-50/80 p-3 rounded-lg border border-blue-200">
+                    <FormattedText text={result.hook} className="text-xs font-medium text-blue-950" />
+                  </div>
                 </div>
 
                 <div>
                   <span className="text-xs font-semibold text-slate-500 block mb-1">
                     Recommended Structure
                   </span>
-                  <pre className="text-xs text-slate-700 font-mono bg-slate-50 p-3 rounded border border-slate-200 whitespace-pre-wrap leading-relaxed">
-                    {result.structure}
-                  </pre>
+                  <div className="text-xs text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200 font-sans leading-relaxed">
+                    <FormattedText text={result.structure} className="text-xs text-slate-700 font-sans" />
+                  </div>
                 </div>
 
                 <div>
                   <span className="text-xs font-semibold text-rose-600 block mb-1">
                     Things to Avoid (Based on Past Flops)
                   </span>
-                  <p className="text-xs text-rose-800 bg-rose-50 p-2.5 rounded border border-rose-200">
-                    {result.thingsToAvoid}
-                  </p>
+                  <div className="text-xs text-rose-800 bg-rose-50 p-3 rounded-lg border border-rose-200">
+                    <FormattedText text={result.thingsToAvoid} className="text-xs text-rose-800 font-sans" />
+                  </div>
                 </div>
               </div>
 
@@ -304,9 +336,9 @@ export default function CreateContent() {
                     D. Why This Strategy? (Memory Reasoning)
                   </h2>
                 </div>
-                <p className="text-xs text-slate-700 leading-relaxed bg-blue-50/40 p-3.5 rounded-lg border border-blue-100">
-                  {result.whyThisStrategy}
-                </p>
+                <div className="text-xs text-slate-700 leading-relaxed bg-blue-50/40 p-3.5 rounded-lg border border-blue-100">
+                  <FormattedText text={result.whyThisStrategy} className="text-xs text-slate-700 leading-relaxed font-sans" />
+                </div>
               </div>
             </div>
 
@@ -339,8 +371,11 @@ export default function CreateContent() {
                   </button>
                 </div>
 
-                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 whitespace-pre-wrap leading-relaxed font-sans min-h-[380px]">
-                  {result.generatedPost}
+                <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 leading-relaxed font-sans min-h-[380px]">
+                  <FormattedText 
+                    text={result.generatedPost} 
+                    className="text-xs text-slate-800 leading-relaxed font-sans" 
+                  />
                 </div>
 
                 {/* Next Step in the Cognitive Loop: Feed Back Performance */}

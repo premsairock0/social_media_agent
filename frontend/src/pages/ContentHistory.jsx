@@ -10,6 +10,7 @@ import {
   X,
   FileText
 } from 'lucide-react';
+import FormattedText from '../components/common/FormattedText';
 
 export default function ContentHistory() {
   const [posts, setPosts] = useState([]);
@@ -223,8 +224,8 @@ export default function ContentHistory() {
             {/* Post Content */}
             <div className="space-y-1.5">
               <span className="text-xs font-semibold text-slate-500 block">Post Body:</span>
-              <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 whitespace-pre-wrap leading-relaxed">
-                {selectedPost.content}
+              <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 leading-relaxed font-sans">
+                <FormattedText text={selectedPost.content} className="text-xs text-slate-800 font-sans" />
               </div>
             </div>
 

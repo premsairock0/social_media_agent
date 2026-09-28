@@ -12,6 +12,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import FormattedText from '../components/common/FormattedText';
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -180,8 +181,8 @@ export default function Dashboard() {
                         <XCircle className="h-4 w-4 text-rose-500" />
                       )}
                     </div>
-                    <div className="flex-1 text-xs text-slate-700 leading-relaxed">
-                      <p>{item.text}</p>
+                    <div className="flex-1">
+                      <FormattedText text={item.text} className="text-xs text-slate-700 leading-relaxed font-sans" />
                     </div>
                   </div>
                 );

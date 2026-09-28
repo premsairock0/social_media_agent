@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import { useContent } from '../context/ContentContext';
+import FormattedText from '../components/common/FormattedText';
 import { 
   Sparkles, 
   BrainCircuit, 
   Copy, 
   Check, 
   ArrowRight, 
-  AlertCircle, 
   Bookmark, 
-  Lightbulb,
-  HelpCircle,
-  PenTool
+  Lightbulb, 
+  HelpCircle, 
+  PenTool 
 } from 'lucide-react';
 
 export default function StrategyView() {
   const location = useLocation();
+  const { result: contextResult, idea } = useContent();
   const [copied, setCopied] = useState(false);
 
-  // Retrieve strategy from location state or provide guidance if navigated directly
-  const data = location.state?.strategyData;
+  // Retrieve strategy from location state or fallback to persisted ContentContext result
+  const data = location.state?.strategyData || contextResult;
 
   const handleCopy = () => {
     if (!data?.generatedPost) return;
@@ -65,7 +67,7 @@ export default function StrategyView() {
           to="/performance"
           state={{
             postData: {
-              topic: data.idea?.substring(0, 60) || 'AI Strategy',
+              topic: data.idea?.substring(0, 60) || idea?.substring(0, 60) || 'AI Strategy',
               style: data.strategy ? data.strategy.split('.')[0] : 'Technical Retrospective',
               hook: data.hook || '',
               content: data.generatedPost || '',
@@ -96,10 +98,12 @@ export default function StrategyView() {
           {data.memoriesUsed?.map((mem, idx) => (
             <div
               key={mem.id || idx}
-              className="p-3 rounded-lg border border-slate-200 bg-slate-50/70 text-xs text-slate-700 flex items-start gap-2.5"
+              className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/70 text-xs text-slate-700 flex items-start gap-2.5"
             >
               <span className="font-mono text-blue-600 font-bold shrink-0">#{idx + 1}</span>
-              <p className="flex-1 leading-relaxed">{mem.content}</p>
+              <div className="flex-1">
+                <FormattedText text={mem.content} className="text-xs text-slate-800 font-sans" />
+              </div>
             </div>
           ))}
         </div>
@@ -118,30 +122,30 @@ export default function StrategyView() {
 
             <div>
               <span className="text-xs font-semibold text-slate-500 block mb-1">Content Angle</span>
-              <p className="text-xs font-medium text-slate-800 bg-slate-50 p-2.5 rounded border border-slate-200">
-                {data.strategy}
-              </p>
+              <div className="text-xs text-slate-800 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                <FormattedText text={data.strategy} className="text-xs font-medium text-slate-800" />
+              </div>
             </div>
 
             <div>
               <span className="text-xs font-semibold text-slate-500 block mb-1">Recommended Hook</span>
-              <p className="text-xs font-mono text-blue-900 bg-blue-50/70 p-2.5 rounded border border-blue-200">
-                "{data.hook}"
-              </p>
+              <div className="text-xs font-sans text-blue-950 bg-blue-50/80 p-3 rounded-lg border border-blue-200">
+                <FormattedText text={data.hook} className="text-xs font-medium text-blue-950" />
+              </div>
             </div>
 
             <div>
               <span className="text-xs font-semibold text-slate-500 block mb-1">Structure</span>
-              <pre className="text-xs text-slate-700 font-mono bg-slate-50 p-3 rounded border border-slate-200 whitespace-pre-wrap leading-relaxed">
-                {data.structure}
-              </pre>
+              <div className="text-xs text-slate-700 bg-slate-50 p-3 rounded-lg border border-slate-200 font-sans leading-relaxed">
+                <FormattedText text={data.structure} className="text-xs text-slate-700 font-sans" />
+              </div>
             </div>
 
             <div>
               <span className="text-xs font-semibold text-rose-600 block mb-1">Things to Avoid</span>
-              <p className="text-xs text-rose-800 bg-rose-50 p-2.5 rounded border border-rose-200">
-                {data.thingsToAvoid}
-              </p>
+              <div className="text-xs text-rose-800 bg-rose-50 p-3 rounded-lg border border-rose-200">
+                <FormattedText text={data.thingsToAvoid} className="text-xs text-rose-800 font-sans" />
+              </div>
             </div>
           </div>
 
@@ -152,9 +156,9 @@ export default function StrategyView() {
                 Why Was This Chosen?
               </h2>
             </div>
-            <p className="text-xs text-slate-700 leading-relaxed bg-blue-50/40 p-3.5 rounded-lg border border-blue-100">
-              {data.whyThisStrategy}
-            </p>
+            <div className="text-xs text-slate-700 leading-relaxed bg-blue-50/40 p-3.5 rounded-lg border border-blue-100">
+              <FormattedText text={data.whyThisStrategy} className="text-xs text-slate-700 leading-relaxed font-sans" />
+            </div>
           </div>
         </div>
 
@@ -187,8 +191,8 @@ export default function StrategyView() {
               </button>
             </div>
 
-            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 whitespace-pre-wrap leading-relaxed font-sans min-h-[380px]">
-              {data.generatedPost}
+            <div className="p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 leading-relaxed font-sans min-h-[380px]">
+              <FormattedText text={data.generatedPost} className="text-xs text-slate-800 leading-relaxed font-sans" />
             </div>
           </div>
         </div>

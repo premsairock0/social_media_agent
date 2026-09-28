@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useContent } from '../context/ContentContext';
 import { recordPerformance, getPosts } from '../services/api';
+import FormattedText from '../components/common/FormattedText';
 import { 
   TrendingUp, 
   BrainCircuit, 
   CheckCircle2, 
   ArrowRight, 
   AlertCircle,
-  Sparkles,
-  BarChart3,
-  Layers
+  Sparkles
 } from 'lucide-react';
 
 export default function PerformanceLogger() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { result: contextResult, idea } = useContent();
 
-  // If navigated from CreateContent/StrategyView, pre-populate post details
-  const prefill = location.state?.postData;
+  // If navigated from CreateContent/StrategyView, pre-populate post details, or fallback to ContentContext
+  const prefill = location.state?.postData || (contextResult ? {
+    topic: idea?.substring(0, 60) || 'AI Strategy',
+    style: contextResult.strategy ? contextResult.strategy.split('.')[0] : 'Technical Retrospective',
+    hook: contextResult.hook || '',
+    content: contextResult.generatedPost || '',
+  } : null);
 
   const [postsList, setPostsList] = useState([]);
   const [selectedPostId, setSelectedPostId] = useState('');
@@ -333,9 +339,9 @@ export default function PerformanceLogger() {
               <BrainCircuit className="h-4 w-4" />
               <span>What SocialMind Learned</span>
             </span>
-            <p className="text-xs text-slate-800 leading-relaxed font-medium">
-              "{result.learnedExperience}"
-            </p>
+            <div className="text-xs text-slate-800 leading-relaxed font-sans font-medium">
+              <FormattedText text={result.learnedExperience} className="text-xs text-slate-800 font-sans" />
+            </div>
           </div>
 
           {/* Loop Progression Action */}
