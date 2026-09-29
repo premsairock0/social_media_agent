@@ -5,26 +5,20 @@ import {
   ThumbsUp, 
   MessageSquare, 
   Share2, 
-  Eye, 
   RefreshCw, 
   TrendingUp, 
   X,
   FileText,
   Search,
-  Sparkles,
   Award,
-  ArrowRight,
-  Database,
-  BarChart3,
   Layers,
   Check,
   Copy,
-  SlidersHorizontal,
   Linkedin,
   Instagram,
   BrainCircuit,
-  Filter,
-  ArrowUpDown
+  ExternalLink,
+  Plus
 } from 'lucide-react';
 import FormattedText from '../components/common/FormattedText';
 
@@ -38,8 +32,6 @@ export default function ContentHistory() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('ALL'); // 'ALL' | 'HIGH' | 'LIVE' | 'SEED' | 'LOW'
   const [platformFilter, setPlatformFilter] = useState('ALL'); // 'ALL' | 'LinkedIn' | 'Instagram'
-  const [selectedStyle, setSelectedStyle] = useState('ALL');
-  const [sortBy, setSortBy] = useState('newest'); // 'newest' | 'engagement_desc' | 'likes_desc' | 'comments_desc'
 
   const fetchPosts = async () => {
     setLoading(true);
@@ -74,12 +66,7 @@ export default function ContentHistory() {
   const totalShares = posts.reduce((acc, p) => acc + (Number(p.metrics?.shares) || 0), 0);
   const totalInteractions = totalLikes + totalComments + totalShares;
 
-  const highRatio = totalPosts > 0 ? Math.round((highCount / totalPosts) * 100) : 0;
-
-  // Available unique styles
-  const availableStyles = Array.from(new Set(posts.map((p) => p.style).filter(Boolean)));
-
-  // Filtered & Sorted posts
+  // Filtered posts
   const filteredPosts = posts.filter((post) => {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -96,26 +83,9 @@ export default function ContentHistory() {
     if (activeTab === 'LIVE' && post.isSeed) return false;
     if (activeTab === 'SEED' && !post.isSeed) return false;
 
-    if (selectedStyle !== 'ALL' && post.style !== selectedStyle) return false;
     if (platformFilter !== 'ALL' && (post.platform || 'LinkedIn') !== platformFilter) return false;
 
     return true;
-  });
-
-  const sortedPosts = [...filteredPosts].sort((a, b) => {
-    if (sortBy === 'engagement_desc') {
-      return (Number(b.metrics?.engagementRate) || 0) - (Number(a.metrics?.engagementRate) || 0);
-    }
-    if (sortBy === 'likes_desc') {
-      return (Number(b.metrics?.likes) || 0) - (Number(a.metrics?.likes) || 0);
-    }
-    if (sortBy === 'comments_desc') {
-      return (Number(b.metrics?.comments) || 0) - (Number(a.metrics?.comments) || 0);
-    }
-    if (sortBy === 'shares_desc') {
-      return (Number(b.metrics?.shares) || 0) - (Number(a.metrics?.shares) || 0);
-    }
-    return 0; // Default order
   });
 
   const handleCopyPost = (content) => {
@@ -125,54 +95,24 @@ export default function ContentHistory() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const getStyleBadgeClass = (style) => {
-    const s = (style || '').toLowerCase();
-    if (s.includes('tech') || s.includes('retrospective')) {
-      return 'bg-blue-50 text-blue-700 border-blue-200/80';
-    }
-    if (s.includes('contrarian') || s.includes('architecture')) {
-      return 'bg-purple-50 text-purple-700 border-purple-200/80';
-    }
-    if (s.includes('story') || s.includes('personal') || s.includes('journey')) {
-      return 'bg-amber-50 text-amber-700 border-amber-200/80';
-    }
-    if (s.includes('partner') || s.includes('corporate') || s.includes('announcement')) {
-      return 'bg-indigo-50 text-indigo-700 border-indigo-200/80';
-    }
-    if (s.includes('benchmark') || s.includes('experiment') || s.includes('agentic')) {
-      return 'bg-cyan-50 text-cyan-700 border-cyan-200/80';
-    }
-    return 'bg-slate-100 text-slate-700 border-slate-200';
-  };
-
   return (
-    <div className="space-y-7 pb-12">
+    <div className="space-y-6 pb-12">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/80">
-              <Database className="h-3 w-3 text-blue-600" />
-              <span>MongoDB Memory Store</span>
-            </span>
-            <span className="text-slate-300">•</span>
-            <span className="text-[11px] font-medium text-slate-500">
-              Syncs with Hindsight Cloud
-            </span>
-          </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">
             Content Experience History
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Historical LinkedIn posts tracked in MongoDB and reflected into Hindsight memory.
+          <p className="text-xs text-slate-500 mt-1">
+            Synced from: MongoDB Memory Store • Hindsight Cloud
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 self-start md:self-auto">
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
           <button
             onClick={fetchPosts}
             disabled={loading}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition-all shadow-xs disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium transition-all shadow-xs disabled:opacity-50"
             title="Refresh database records"
           >
             <RefreshCw className={`h-3.5 w-3.5 text-slate-500 ${loading ? 'animate-spin' : ''}`} />
@@ -181,210 +121,165 @@ export default function ContentHistory() {
           
           <Link
             to="/create"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all shadow-xs shadow-blue-500/20"
+            className="inline-flex items-center gap-1 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-all shadow-xs"
           >
-            <Sparkles className="h-3.5 w-3.5" />
+            <Plus className="h-3.5 w-3.5" />
             <span>Create Content</span>
           </Link>
         </div>
       </div>
 
-      {/* Analytics KPI Metric Cards */}
+      {/* Full-width Search Bar */}
+      <div className="relative w-full">
+        <Search className="h-4 w-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search posts by topic, hook, style, copy, or outcome..."
+          className="w-full pl-10 pr-9 py-2.5 rounded-xl border border-slate-200 bg-white text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all shadow-xs"
+        />
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => setSearchQuery('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+
+      {/* Analytics KPI Metric Cards (4 in a row) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total Posts */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs hover:border-slate-300 transition-all">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
-            <span>Experience Bank</span>
+        {/* Card 1: Experience Bank */}
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between min-h-[140px]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-800">Experience Bank</span>
             <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
               <Layers className="h-4 w-4" />
             </div>
           </div>
-          <div className="mt-2.5 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-slate-900 tracking-tight">
-              {loading ? '...' : totalPosts}
-            </span>
-            <span className="text-xs text-slate-500 font-medium">total posts</span>
+          <div className="mt-2 text-3xl font-bold text-slate-900 tracking-tight">
+            {loading ? '...' : totalPosts}
           </div>
-          <div className="mt-2 flex items-center gap-2 text-[11px] text-slate-500">
-            <span className="inline-flex items-center gap-1 text-emerald-700 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              {liveCount} Live
+          <div className="mt-2 flex items-center gap-3 text-xs text-slate-500 font-medium">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+              Live: {liveCount}
             </span>
-            <span className="text-slate-300">/</span>
-            <span className="inline-flex items-center gap-1 text-slate-600 font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-              {seedCount} Seeds
+            <span className="inline-flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-slate-400"></span>
+              Seeds: {seedCount}
             </span>
           </div>
         </div>
 
-        {/* Average Engagement */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs hover:border-slate-300 transition-all">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
-            <span>Avg Engagement Rate</span>
+        {/* Card 2: Avg. Engagement Rate */}
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between min-h-[140px]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-800">Avg. Engagement Rate</span>
             <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
               <TrendingUp className="h-4 w-4" />
             </div>
           </div>
-          <div className="mt-2.5 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-emerald-600 tracking-tight">
-              {loading ? '...' : `${avgEngagement}%`}
-            </span>
-            <span className="text-xs text-slate-500 font-medium">across posts</span>
+          <div className="mt-2 text-3xl font-bold text-slate-900 tracking-tight">
+            {loading ? '...' : `${avgEngagement}%`}
           </div>
-          <p className="mt-2 text-[11px] text-slate-500">
-            Benchmark: <span className="font-semibold text-slate-700">&gt; 3.0%</span> considered high-resonance
-          </p>
+          <div className="mt-2 text-xs text-slate-500 leading-tight">
+            <p>Across posts.</p>
+            <p className="mt-0.5">Benchmark &gt; 3.0% (High Resonance)</p>
+          </div>
         </div>
 
-        {/* Total Interactions */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs hover:border-slate-300 transition-all">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
-            <span>Total Interactions</span>
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-              <BarChart3 className="h-4 w-4" />
+        {/* Card 3: Total Interactions */}
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between min-h-[140px]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-800">Total Interactions</span>
+            <div className="w-10 h-10 flex items-center justify-center">
+              <svg className="w-9 h-9" viewBox="0 0 36 36">
+                {/* Outer ring - Blue */}
+                <circle cx="18" cy="18" r="14" fill="none" stroke="#2563eb" strokeWidth="2.5" strokeDasharray="70 30" strokeDashoffset="25" strokeLinecap="round" />
+                {/* Middle ring - Red/Coral */}
+                <circle cx="18" cy="18" r="10" fill="none" stroke="#f43f5e" strokeWidth="2.5" strokeDasharray="50 50" strokeDashoffset="10" strokeLinecap="round" />
+                {/* Inner ring - Light Blue */}
+                <circle cx="18" cy="18" r="6" fill="none" stroke="#38bdf8" strokeWidth="2.5" strokeDasharray="35 65" strokeDashoffset="0" strokeLinecap="round" />
+              </svg>
             </div>
           </div>
-          <div className="mt-2.5 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-slate-900 tracking-tight">
-              {loading ? '...' : totalInteractions.toLocaleString()}
-            </span>
-            <span className="text-xs text-slate-500 font-medium">reactions</span>
+          <div className="mt-2 text-3xl font-bold text-slate-900 tracking-tight">
+            {loading ? '...' : totalInteractions.toLocaleString()}
           </div>
-          <div className="mt-2 flex items-center gap-2 text-[11px] text-slate-500">
-            <span>{totalLikes.toLocaleString()} likes</span>
-            <span className="text-slate-300">•</span>
-            <span>{totalComments.toLocaleString()} comments</span>
+          <div className="mt-2 text-xs text-slate-500 font-medium flex items-center gap-2 flex-wrap">
+            <span>Likes: {totalLikes.toLocaleString()}</span>
+            <span>Comments: {totalComments.toLocaleString()}</span>
+            <span>Shares: {totalShares.toLocaleString()}</span>
           </div>
         </div>
 
-        {/* High Performers */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200/80 shadow-xs hover:border-slate-300 transition-all">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
-            <span>High Performers</span>
+        {/* Card 4: High Performers */}
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between min-h-[140px]">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-800">High Performers</span>
             <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
               <Award className="h-4 w-4" />
             </div>
           </div>
-          <div className="mt-2.5 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-slate-900 tracking-tight">
-              {loading ? '...' : highCount}
-            </span>
-            <span className="text-xs text-amber-600 font-semibold">({highRatio}% ratio)</span>
+          <div className="mt-2 text-3xl font-bold text-slate-900 tracking-tight">
+            {loading ? '...' : highCount}
           </div>
-          <p className="mt-2 text-[11px] text-slate-500 truncate">
+          <div className="mt-2 text-xs text-slate-500">
             Exemplars actively recalled by Hindsight
-          </p>
+          </div>
         </div>
       </div>
 
-      {/* Control Bar: Search, Category Tabs, Style & Sort Filters */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs space-y-3.5">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-          {/* Search Box */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="h-4 w-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search posts by topic, hook, style, or copy..."
-              className="w-full pl-9 pr-8 py-2 rounded-lg border border-slate-200 bg-slate-50/50 hover:bg-slate-50 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
-
-          {/* Style & Sort Dropdowns */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Style Filter */}
-            <div className="flex items-center gap-1.5 text-xs text-slate-600">
-              <Filter className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-              <select
-                value={selectedStyle}
-                onChange={(e) => setSelectedStyle(e.target.value)}
-                className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all cursor-pointer"
-              >
-                <option value="ALL">All Content Styles</option>
-                {availableStyles.map((style) => (
-                  <option key={style} value={style}>
-                    {style}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-1.5 text-xs text-slate-600">
-              <ArrowUpDown className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all cursor-pointer"
-              >
-                <option value="newest">Default Order</option>
-                <option value="engagement_desc">Highest Engagement</option>
-                <option value="likes_desc">Most Likes</option>
-                <option value="comments_desc">Most Comments</option>
-                <option value="shares_desc">Most Shares</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Filter Pills */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100">
-          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1">
-            Platform:
-          </span>
+      {/* Main Content Box: Filters & Table */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+        {/* Filter Bar */}
+        <div className="p-4 border-b border-slate-100 flex flex-wrap items-center gap-2 text-xs">
+          {/* Platform Filters */}
+          <span className="font-semibold text-slate-700 mr-1">Platform:</span>
           <button
             type="button"
             onClick={() => setPlatformFilter('ALL')}
-            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
+            className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
               platformFilter === 'ALL'
-                ? 'bg-slate-800 text-white'
+                ? 'bg-slate-900 text-white shadow-xs'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            All Platforms
+            All
           </button>
           <button
             type="button"
             onClick={() => setPlatformFilter('LinkedIn')}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all ${
               platformFilter === 'LinkedIn'
-                ? 'bg-blue-600 text-white'
-                : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-100'
             }`}
           >
             <Linkedin className="h-3 w-3" />
-            <span>LinkedIn</span>
+            <span>Linkedin</span>
           </button>
           <button
             type="button"
             onClick={() => setPlatformFilter('Instagram')}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all ${
               platformFilter === 'Instagram'
-                ? 'bg-pink-600 text-white'
-                : 'bg-pink-50 text-pink-700 hover:bg-pink-100'
+                ? 'bg-pink-600 text-white shadow-xs'
+                : 'bg-pink-50 text-pink-700 hover:bg-pink-100 border border-pink-100'
             }`}
           >
             <Instagram className="h-3 w-3" />
             <span>Instagram</span>
           </button>
 
-          <span className="text-slate-300 mx-1">|</span>
+          <span className="text-slate-300 mx-1 hidden sm:inline">|</span>
 
-          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1">
-            Outcome:
-          </span>
+          {/* Outcome Filters */}
+          <span className="font-semibold text-slate-700 mr-1">Outcome:</span>
           <button
             type="button"
             onClick={() => setActiveTab('ALL')}
@@ -394,112 +289,112 @@ export default function ContentHistory() {
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
-            All Posts ({totalPosts})
+            All
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('HIGH')}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all ${
               activeTab === 'HIGH'
                 ? 'bg-emerald-600 text-white shadow-xs'
-                : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200/60'
+                : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-100'
             }`}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            High Performers ({highCount})
+            <span>High Performer ({highCount})</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('LIVE')}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all ${
               activeTab === 'LIVE'
                 ? 'bg-blue-600 text-white shadow-xs'
-                : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200/60'
+                : 'bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-100'
             }`}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-            Live Experience ({liveCount})
+            <span>Live ({liveCount})</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('SEED')}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all ${
               activeTab === 'SEED'
                 ? 'bg-indigo-600 text-white shadow-xs'
-                : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200/60'
+                : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-100'
             }`}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
-            Historical Seeds ({seedCount})
+            <span>Seed ({seedCount})</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('LOW')}
-            className={`px-3 py-1 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all ${
               activeTab === 'LOW'
                 ? 'bg-rose-600 text-white shadow-xs'
-                : 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200/60'
+                : 'bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-100'
             }`}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
-            Underperformed ({lowCount})
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+            <span>Underperformed ({lowCount})</span>
           </button>
 
-          {(searchQuery || activeTab !== 'ALL' || selectedStyle !== 'ALL') && (
+          {(searchQuery || activeTab !== 'ALL' || platformFilter !== 'ALL') && (
             <button
               type="button"
               onClick={() => {
                 setSearchQuery('');
                 setActiveTab('ALL');
-                setSelectedStyle('ALL');
+                setPlatformFilter('ALL');
               }}
-              className="text-[11px] text-blue-600 hover:text-blue-800 font-medium underline ml-auto"
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium underline ml-auto"
             >
-              Reset Filters
+              Reset
             </button>
           )}
         </div>
-      </div>
 
-      {/* Posts Table Card */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+        {/* Posts Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-slate-700">
-            <thead className="bg-slate-50 text-[11px] uppercase font-bold text-slate-500 border-b border-slate-200 tracking-wider">
+            <thead className="bg-white text-[11px] uppercase font-bold text-slate-500 border-b border-slate-200 tracking-wider">
               <tr>
-                <th className="px-6 py-4">Topic & Hook</th>
-                <th className="px-6 py-4">Content Style</th>
-                <th className="px-6 py-4 text-center">Interactions</th>
-                <th className="px-6 py-4 text-right">Engagement Rate</th>
-                <th className="px-6 py-4 text-right">Performance & Action</th>
+                <th className="px-6 py-3.5">TOPIC & HOOK</th>
+                <th className="px-6 py-3.5">PLATFORM</th>
+                <th className="px-6 py-3.5">CONTENT STYLE</th>
+                <th className="px-6 py-3.5">INTERACTIONS</th>
+                <th className="px-6 py-3.5 text-center">ENGAGEMENT RATE</th>
+                <th className="px-6 py-3.5 text-right">PERFORMANCE & ACTION</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 // Shimmer Loading Skeletons
-                Array.from({ length: 5 }).map((_, idx) => (
+                Array.from({ length: 4 }).map((_, idx) => (
                   <tr key={idx} className="animate-pulse">
                     <td className="px-6 py-4">
                       <div className="h-4 bg-slate-200 rounded w-3/4 mb-2"></div>
                       <div className="h-3 bg-slate-100 rounded w-1/2"></div>
                     </td>
                     <td className="px-6 py-4">
+                      <div className="h-5 bg-slate-100 rounded-full w-24"></div>
+                    </td>
+                    <td className="px-6 py-4">
                       <div className="h-5 bg-slate-100 rounded-full w-28"></div>
                     </td>
+                    <td className="px-6 py-4">
+                      <div className="h-5 bg-slate-100 rounded w-28"></div>
+                    </td>
                     <td className="px-6 py-4 text-center">
-                      <div className="h-4 bg-slate-100 rounded w-24 mx-auto"></div>
+                      <div className="h-4 bg-slate-200 rounded w-12 mx-auto"></div>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="h-4 bg-slate-200 rounded w-12 ml-auto"></div>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="h-5 bg-slate-100 rounded-full w-20 ml-auto"></div>
+                      <div className="h-5 bg-slate-100 rounded-full w-24 ml-auto"></div>
                     </td>
                   </tr>
                 ))
-              ) : sortedPosts.length === 0 ? (
+              ) : filteredPosts.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-14 text-center">
+                  <td colSpan={6} className="px-6 py-14 text-center">
                     <div className="max-w-sm mx-auto text-center space-y-2.5">
                       <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
                         <FileText className="h-6 w-6" />
@@ -508,17 +403,17 @@ export default function ContentHistory() {
                         No experiences found
                       </h4>
                       <p className="text-xs text-slate-500">
-                        {searchQuery || activeTab !== 'ALL' || selectedStyle !== 'ALL'
+                        {searchQuery || activeTab !== 'ALL' || platformFilter !== 'ALL'
                           ? 'No posts matched your current search filters.'
                           : 'No posts found in database. Seed sample data or generate your first post!'}
                       </p>
-                      {(searchQuery || activeTab !== 'ALL' || selectedStyle !== 'ALL') && (
+                      {(searchQuery || activeTab !== 'ALL' || platformFilter !== 'ALL') && (
                         <button
                           type="button"
                           onClick={() => {
                             setSearchQuery('');
                             setActiveTab('ALL');
-                            setSelectedStyle('ALL');
+                            setPlatformFilter('ALL');
                           }}
                           className="px-3.5 py-1.5 rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-semibold transition-colors"
                         >
@@ -529,17 +424,20 @@ export default function ContentHistory() {
                   </td>
                 </tr>
               ) : (
-                sortedPosts.map((post) => {
+                filteredPosts.map((post) => {
                   const rate = Number(post.metrics?.engagementRate || 0);
                   const isHigh = rate >= 3.0;
                   const isLow = rate < 1.8;
-                  const rateBarWidth = Math.min(Math.round((rate / 6.0) * 100), 100);
+                  const likes = Number(post.metrics?.likes || 0);
+                  const comments = Number(post.metrics?.comments || 0);
+                  const shares = Number(post.metrics?.shares || 0);
+                  const isInstagram = (post.platform || '').toLowerCase() === 'instagram';
 
                   return (
                     <tr
                       key={post._id}
                       onClick={() => setSelectedPost(post)}
-                      className="group hover:bg-blue-50/30 cursor-pointer transition-all border-b border-slate-100"
+                      className="group hover:bg-slate-50/70 cursor-pointer transition-colors border-b border-slate-100"
                     >
                       {/* Topic & Hook */}
                       <td className="px-6 py-4 max-w-md">
@@ -549,10 +447,10 @@ export default function ContentHistory() {
                               {post.topic}
                             </span>
                             <span
-                              className={`text-[10px] font-semibold tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1 shrink-0 ${
+                              className={`text-[11px] font-medium px-2 py-0.5 rounded-full inline-flex items-center gap-1.5 shrink-0 ${
                                 post.isSeed
-                                  ? 'bg-slate-100 text-slate-600 border border-slate-200'
-                                  : 'bg-emerald-50 text-emerald-700 border border-emerald-200/80'
+                                  ? 'bg-slate-100 text-slate-600'
+                                  : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                               }`}
                             >
                               <span
@@ -562,106 +460,103 @@ export default function ContentHistory() {
                               ></span>
                               {post.isSeed ? 'Historical Seed' : 'Live Experience'}
                             </span>
-
-                            {/* Platform Badge */}
-                            <span
-                              className={`text-[10px] font-semibold tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1 shrink-0 ${
-                                post.platform === 'Instagram'
-                                  ? 'bg-pink-50 text-pink-700 border border-pink-200'
-                                  : 'bg-blue-50 text-blue-700 border border-blue-200'
-                              }`}
-                            >
-                              {post.platform === 'Instagram' ? (
-                                <Instagram className="h-3 w-3 text-pink-600" />
-                              ) : (
-                                <Linkedin className="h-3 w-3 text-blue-600" />
-                              )}
-                              <span>{post.platform || 'LinkedIn'}</span>
-                            </span>
                           </div>
-                          <p className="text-slate-500 text-xs line-clamp-1 leading-relaxed font-sans">
+                          <p className="text-slate-500 text-xs line-clamp-1 leading-relaxed">
                             {post.hook || post.content}
                           </p>
                         </div>
                       </td>
 
-                      {/* Content Style Badge */}
+                      {/* Platform */}
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold border shadow-2xs ${getStyleBadgeClass(
-                            post.style
-                          )}`}
-                        >
-                          {post.style}
+                        {isInstagram ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-50 text-pink-700 border border-pink-100">
+                            <Instagram className="h-3 w-3 text-pink-600" />
+                            <span>Instagram</span>
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
+                            <Linkedin className="h-3 w-3 text-blue-600" />
+                            <span>Linkedin</span>
+                          </span>
+                        )}
+                      </td>
+
+                      {/* Content Style */}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-blue-50/70 text-slate-700 border border-blue-100/70">
+                          {post.style || 'Technical Storytelling'}
                         </span>
                       </td>
 
-                      {/* Interactions Stat Pills */}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-center gap-2">
+                      {/* Interactions */}
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center gap-2">
                           <span
                             className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-xs font-medium"
-                            title={`${post.metrics?.likes || 0} Likes`}
+                            title={`${likes} Likes`}
                           >
-                            <ThumbsUp className="h-3 w-3" />
-                            <span>{post.metrics?.likes || 0}</span>
+                            <ThumbsUp className="h-3 w-3 text-blue-600" />
+                            <span>{likes}</span>
                           </span>
                           <span
                             className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-xs font-medium"
-                            title={`${post.metrics?.comments || 0} Comments`}
+                            title={`${comments} Comments`}
                           >
-                            <MessageSquare className="h-3 w-3" />
-                            <span>{post.metrics?.comments || 0}</span>
+                            <MessageSquare className="h-3 w-3 text-emerald-600" />
+                            <span>{comments}</span>
                           </span>
                           <span
                             className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-xs font-medium"
-                            title={`${post.metrics?.shares || 0} Shares`}
+                            title={`${shares} Shares`}
                           >
-                            <Share2 className="h-3 w-3" />
-                            <span>{post.metrics?.shares || 0}</span>
+                            <Share2 className="h-3 w-3 text-indigo-600" />
+                            <span>{shares}</span>
                           </span>
                         </div>
                       </td>
 
                       {/* Engagement Rate */}
-                      <td className="px-6 py-4 text-right">
-                        <div className="inline-block text-right">
-                          <div className="font-mono font-bold text-sm text-slate-900">
+                      <td className="px-6 py-4 text-center whitespace-nowrap">
+                        <div className="inline-flex flex-col items-center">
+                          <span className="font-bold text-xs text-slate-900">
                             {rate.toFixed(2)}%
-                          </div>
-                          {/* Mini Progress meter */}
-                          <div className="w-16 h-1 bg-slate-100 rounded-full mt-1 ml-auto overflow-hidden">
-                            <div
-                              className={`h-full rounded-full ${
-                                isHigh ? 'bg-emerald-500' : isLow ? 'bg-rose-400' : 'bg-blue-500'
-                              }`}
-                              style={{ width: `${rateBarWidth}%` }}
-                            ></div>
-                          </div>
+                          </span>
+                          <div className="w-12 h-1 bg-emerald-500 rounded-full mt-1"></div>
                         </div>
                       </td>
 
-                      {/* Performance Status & Hover Cue */}
+                      {/* Performance & Action */}
                       <td className="px-6 py-4 text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-3">
+                        <div className="flex items-center justify-end gap-2.5">
                           {isHigh ? (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                               High Performer
                             </span>
                           ) : isLow ? (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">
                               <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                               Underperformed
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
                               <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                               Average
                             </span>
                           )}
 
-                          <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedPost(post);
+                            }}
+                            className="p-1 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+                            title="View Details"
+                          >
+                            <ExternalLink className="h-3.5 w-3.5" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -673,7 +568,7 @@ export default function ContentHistory() {
         </div>
       </div>
 
-      {/* Enhanced LinkedIn Post Detail Modal */}
+      {/* Post Detail Modal */}
       {selectedPost && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 space-y-5 max-h-[90vh] overflow-y-auto">
@@ -681,12 +576,8 @@ export default function ContentHistory() {
             <div className="flex items-start justify-between border-b border-slate-100 pb-4">
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span
-                    className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold border ${getStyleBadgeClass(
-                      selectedPost.style
-                    )}`}
-                  >
-                    {selectedPost.style}
+                  <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50/70 text-slate-700 border border-blue-100/70">
+                    {selectedPost.style || 'Content Style'}
                   </span>
                   <span
                     className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${
@@ -748,9 +639,8 @@ export default function ContentHistory() {
               </div>
             </div>
 
-            {/* Simulated LinkedIn Post Card */}
+            {/* Simulated Post Card */}
             <div className="rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden">
-              {/* LinkedIn Author Header */}
               <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
@@ -770,13 +660,15 @@ export default function ContentHistory() {
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-mono text-slate-400">
+                  {(selectedPost.platform || '').toLowerCase() === 'instagram' ? (
+                    <Instagram className="h-4 w-4 text-pink-600" />
+                  ) : (
                     <Linkedin className="h-4 w-4 text-blue-600" />
-                  </span>
+                  )}
                 </div>
               </div>
 
-              {/* LinkedIn Post Copy */}
+              {/* Post Copy */}
               <div className="p-4 text-xs text-slate-800 leading-relaxed font-sans bg-slate-50/30">
                 <FormattedText
                   text={selectedPost.content}
@@ -784,7 +676,7 @@ export default function ContentHistory() {
                 />
               </div>
 
-              {/* LinkedIn Footer Actions */}
+              {/* Post Footer Actions */}
               <div className="p-3 border-t border-slate-100 bg-white flex items-center justify-between text-xs text-slate-500">
                 <div className="flex items-center gap-1 text-[11px]">
                   <span className="flex -space-x-1">
