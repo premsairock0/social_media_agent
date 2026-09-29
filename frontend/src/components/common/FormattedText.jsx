@@ -7,7 +7,7 @@ import React from 'react';
  * - Lists (bulleted `-`, `*`, `•` and numbered `1.`, `2.`)
  * - Subheadings (`#`, `##`, `###`)
  * - Preserves natural spacing and line breaks
- * - Uses the active font according to the surrounding context without raw asterisks
+ * - Adapts cleanly to both Light Mode and Dark Mode
  */
 export default function FormattedText({ text, className = '' }) {
   if (!text) return null;
@@ -19,11 +19,7 @@ export default function FormattedText({ text, className = '' }) {
   const renderInline = (lineContent) => {
     if (!lineContent) return null;
 
-    // Tokenize inline elements:
-    // 1. **bold** or __bold__
-    // 2. *bold/emphasis* or _italic_
-    // 3. `code`
-    // Regex matches: `([^`]+)` | \*\*([^*]+)\*\* | __([^_]+)__ | \*([^*]+)\* | _([^_]+)_
+    // Tokenize inline elements
     const regex = /(`[^`]+`|\*\*[^*]+\*\*|__[^_]+__|(?<!\*)\*[^*]+\*(?!\*)|(?<!_)_[^_]+_(?!_))/g;
     const parts = lineContent.split(regex);
 
@@ -35,7 +31,7 @@ export default function FormattedText({ text, className = '' }) {
         return (
           <code
             key={i}
-            className="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 text-blue-700 font-mono text-[11px]"
+            className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#172033] border border-slate-200 dark:border-indigo-500/30 text-blue-600 dark:text-blue-400 font-mono text-[11px]"
           >
             {part.slice(1, -1)}
           </code>
@@ -48,20 +44,19 @@ export default function FormattedText({ text, className = '' }) {
         (part.startsWith('__') && part.endsWith('__') && part.length >= 4)
       ) {
         return (
-          <strong key={i} className="font-bold text-slate-900">
+          <strong key={i} className="font-bold text-slate-900 dark:text-white">
             {part.slice(2, -2)}
           </strong>
         );
       }
 
       // Single Asterisk / Underscore (*bold/emphasis* or _text_)
-      // Converted to strong bold using the active font as requested by user
       if (
         (part.startsWith('*') && part.endsWith('*') && part.length >= 2) ||
         (part.startsWith('_') && part.endsWith('_') && part.length >= 2)
       ) {
         return (
-          <strong key={i} className="font-bold text-slate-900">
+          <strong key={i} className="font-bold text-slate-900 dark:text-white">
             {part.slice(1, -1)}
           </strong>
         );
@@ -84,21 +79,21 @@ export default function FormattedText({ text, className = '' }) {
         // Heading 1 / 2 / 3
         if (trimmed.startsWith('### ')) {
           return (
-            <h4 key={idx} className="font-bold text-slate-900 text-sm mt-3 mb-1">
+            <h4 key={idx} className="font-bold text-slate-900 dark:text-white text-sm mt-3 mb-1">
               {renderInline(trimmed.replace(/^###\s+/, ''))}
             </h4>
           );
         }
         if (trimmed.startsWith('## ')) {
           return (
-            <h3 key={idx} className="font-bold text-slate-900 text-sm mt-3 mb-1">
+            <h3 key={idx} className="font-bold text-slate-900 dark:text-white text-sm mt-3 mb-1">
               {renderInline(trimmed.replace(/^##\s+/, ''))}
             </h3>
           );
         }
         if (trimmed.startsWith('# ')) {
           return (
-            <h2 key={idx} className="font-bold text-slate-900 text-base mt-3.5 mb-1.5">
+            <h2 key={idx} className="font-bold text-slate-900 dark:text-white text-base mt-3.5 mb-1.5">
               {renderInline(trimmed.replace(/^#\s+/, ''))}
             </h2>
           );
@@ -109,7 +104,7 @@ export default function FormattedText({ text, className = '' }) {
           return (
             <blockquote
               key={idx}
-              className="border-l-2 border-blue-500 pl-3 italic text-slate-700 my-1 bg-blue-50/30 py-1 rounded-r"
+              className="border-l-2 border-blue-500 pl-3 italic text-slate-700 dark:text-slate-300 my-1 bg-blue-50/30 dark:bg-blue-950/20 py-1 rounded-r"
             >
               {renderInline(trimmed.replace(/^>\s+/, ''))}
             </blockquote>
@@ -122,7 +117,7 @@ export default function FormattedText({ text, className = '' }) {
           const indent = bulletMatch[1].length > 0 ? 'ml-4' : 'ml-1';
           return (
             <div key={idx} className={`flex items-start gap-2 ${indent} my-0.5`}>
-              <span className="text-blue-600 font-bold leading-relaxed shrink-0">•</span>
+              <span className="text-blue-600 dark:text-blue-400 font-bold leading-relaxed shrink-0">•</span>
               <span className="flex-1 leading-relaxed">
                 {renderInline(bulletMatch[3])}
               </span>
@@ -136,7 +131,7 @@ export default function FormattedText({ text, className = '' }) {
           const indent = numberMatch[1].length > 0 ? 'ml-4' : 'ml-1';
           return (
             <div key={idx} className={`flex items-start gap-2 ${indent} my-0.5`}>
-              <span className="text-blue-600 font-semibold text-xs leading-relaxed shrink-0 min-w-[1.2rem]">
+              <span className="text-blue-600 dark:text-blue-400 font-semibold text-xs leading-relaxed shrink-0 min-w-[1.2rem]">
                 {numberMatch[2]}
               </span>
               <span className="flex-1 leading-relaxed">

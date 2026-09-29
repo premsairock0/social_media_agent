@@ -25,7 +25,7 @@ export default function AgentChat() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: `Hello ${user?.name || 'Creator'}! I am your SocialPulse AI Engagement Agent. I have continuous access to your retained audience memories, engagement telemetry, and platform benchmarks for ${platform}. How can I help you grow today?`,
+      content: `Hello ${user?.name || 'Creator'}! I am your Kazam AI Engagement Agent. I have continuous access to your retained audience memories, engagement telemetry, and platform benchmarks for ${platform}. How can I help you grow today?`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     },
   ]);
@@ -111,7 +111,7 @@ export default function AgentChat() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="font-bold text-slate-900 text-sm">SocialPulse AI Agent</h2>
+              <h2 className="font-bold text-slate-900 text-sm">Kazam AI Agent</h2>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-700 uppercase tracking-wider">
                 Active Intelligence
               </span>
@@ -241,7 +241,7 @@ export default function AgentChat() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={`Ask the SocialPulse Agent for ${platform} strategy, copy, or memory insights...`}
+            placeholder={`Ask the Kazam Agent for ${platform} strategy, copy, or memory insights...`}
             disabled={loading}
             className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition"
           />

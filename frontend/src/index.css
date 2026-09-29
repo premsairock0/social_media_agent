@@ -2,16 +2,109 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   Centralized Theme System: CSS Design Tokens
+   Single Source of Truth for Light and Dark Modes
+   ========================================================================== */
 :root {
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   color-scheme: light;
+
+  /* Theme Tokens: Light Mode (Crisp White & Slate SaaS) */
+  --bg-primary: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-secondary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-subtle: #f8fafc;
+  --border: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --input-text: #0f172a;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+}
+
+html.dark,
+.dark,
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Theme Tokens: Dark Mode (Cohesive Deep Navy SaaS) - UNTOUCHED */
+  --bg-primary: #080b14;
+  --bg-surface: #0d1322;
+  --bg-secondary: #101625;
+  --bg-card: #121a2a;
+  --bg-card-subtle: #172033;
+  --border: rgba(99, 102, 241, 0.18);
+  --border-subtle: rgba(99, 102, 241, 0.1);
+  --text-primary: #f5f7ff;
+  --text-secondary: #aab4cc;
+  --text-muted: #64748b;
+  --input-bg: #0d1424;
+  --input-border: rgba(99, 102, 241, 0.28);
+  --input-text: #f5f7ff;
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 code, pre {
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Subtle SaaS scrollbars */
+/* ==========================================================================
+   Centralized Theme Utility Classes
+   ========================================================================== */
+.bg-theme-page {
+  background-color: var(--bg-primary) !important;
+}
+
+.bg-theme-surface {
+  background-color: var(--bg-surface) !important;
+}
+
+.bg-theme-secondary {
+  background-color: var(--bg-secondary) !important;
+}
+
+.bg-theme-card {
+  background-color: var(--bg-card) !important;
+}
+
+.bg-theme-card-subtle {
+  background-color: var(--bg-card-subtle) !important;
+}
+
+.text-theme-primary {
+  color: var(--text-primary) !important;
+}
+
+.text-theme-secondary {
+  color: var(--text-secondary) !important;
+}
+
+.text-theme-muted {
+  color: var(--text-muted) !important;
+}
+
+.border-theme {
+  border-color: var(--border) !important;
+}
+
+.border-theme-subtle {
+  border-color: var(--border-subtle) !important;
+}
+
+/* Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -27,10 +120,70 @@ code, pre {
   background: #94a3b8;
 }
 
+html.dark ::-webkit-scrollbar-track {
+  background: #0b1020;
+}
+html.dark ::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* ==========================================================================
+   Input and Interactive Elements in Dark Mode
+   ========================================================================== */
+html.dark input:not([type='checkbox']):not([type='radio']),
+html.dark textarea,
+html.dark select {
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border-color: var(--input-border);
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #55627e;
+}
+
+html.dark input:focus,
+html.dark textarea:focus,
+html.dark select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+}
+
+html.dark option {
+  background-color: #121a2a;
+  color: #f5f7ff;
+}
+
+/* Authentication Page Dark Card Styling */
+html.dark .auth-page-bg {
+  background: linear-gradient(135deg, #06080f 0%, #0a0e1c 50%, #120e24 100%) !important;
+}
+
+html.dark .auth-card-outer {
+  background-color: rgba(18, 26, 42, 0.75) !important;
+  border-color: rgba(99, 102, 241, 0.25) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
+}
+
+html.dark .auth-visual-column {
+  background: linear-gradient(to bottom, rgba(23, 32, 51, 0.9), rgba(16, 22, 37, 0.95)) !important;
+  border-color: rgba(99, 102, 241, 0.2) !important;
+}
+
+html.dark .auth-form-column {
+  background-color: #121a2a !important;
+  border-color: rgba(99, 102, 241, 0.2) !important;
 }

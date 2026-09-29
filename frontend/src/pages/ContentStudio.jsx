@@ -310,7 +310,7 @@ export default function ContentStudio() {
           {/* Studio Pro-Tip */}
           {studioResult.recommendations && (
             <div className="p-3.5 rounded-lg bg-blue-50/70 border border-blue-200 text-xs text-blue-900 space-y-1">
-              <span className="font-bold block">SocialPulse Strategic Insight</span>
+              <span className="font-bold block">Kazam Strategic Insight</span>
               <p>{studioResult.recommendations}</p>
             </div>
           )}

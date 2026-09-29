@@ -1,9 +1,25 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       colors: {
+        theme: {
+          page: 'var(--bg-primary)',
+          surface: 'var(--bg-surface)',
+          secondary: 'var(--bg-secondary)',
+          card: 'var(--bg-card)',
+          'card-subtle': 'var(--bg-card-subtle)',
+          border: 'var(--border)',
+          'border-subtle': 'var(--border-subtle)',
+          'text-primary': 'var(--text-primary)',
+          'text-secondary': 'var(--text-secondary)',
+          'text-muted': 'var(--text-muted)',
+          input: 'var(--input-bg)',
+          'input-border': 'var(--input-border)',
+          'input-text': 'var(--input-text)',
+        },
         brand: {
           50: '#eef2ff',
           100: '#e0e7ff',

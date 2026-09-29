@@ -12,15 +12,19 @@ export function SoundwaveIcon({ className = 'h-7' }) {
   );
 }
 
-export function SocialPulseLogo({ size = 'default' }) {
+export function KazamLogo({ size = 'default' }) {
   return (
     <div className="flex items-center gap-2.5">
       <SoundwaveIcon />
-      <span className={`font-bold tracking-tight text-slate-900 ${size === 'lg' ? 'text-2xl' : 'text-xl'}`}>
-        Social<span className="text-indigo-600">Pulse</span>
+      <span className={`font-extrabold tracking-wider text-slate-900 ${size === 'lg' ? 'text-2xl' : 'text-xl'}`}>
+        KAZAM
       </span>
     </div>
   );
+}
+
+export function SocialPulseLogo({ size = 'default' }) {
+  return <KazamLogo size={size} />;
 }
 
 export function GoogleIcon() {

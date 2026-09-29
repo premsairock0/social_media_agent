@@ -65,7 +65,7 @@ export default function LearnedInsights() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-5">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            What SocialPulse Has Learned
+            What Kazam Has Learned
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             Audience intelligence, platform patterns, and strategic memory synthesized directly by <span className="font-semibold text-slate-700">Hindsight Cloud</span> from real performance outcomes.
@@ -107,7 +107,7 @@ export default function LearnedInsights() {
 
         {loading ? (
           <div className="py-12 text-center text-xs text-slate-400">
-            SocialPulse is synthesizing strategic patterns across all retained experiences...
+            Kazam is synthesizing strategic patterns across all retained experiences...
           </div>
         ) : reflection ? (
           <div className="prose prose-sm max-w-none text-xs text-slate-700 leading-relaxed font-sans bg-slate-50 p-5 rounded-lg border border-slate-200 whitespace-pre-wrap">

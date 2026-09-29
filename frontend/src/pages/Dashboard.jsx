@@ -6,15 +6,12 @@ import {
   BrainCircuit, 
   TrendingUp, 
   Sparkles, 
-  CheckCircle2, 
-  XCircle, 
   ArrowRight,
   RefreshCw,
   AlertCircle,
   HelpCircle,
   Linkedin,
   Instagram,
-  Layers,
   Flame
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -47,44 +44,44 @@ export default function Dashboard() {
   return (
     <div className="space-y-8">
       {/* Header & Value Proposition */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 dark:border-indigo-500/20 pb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-blue-600 tracking-wider uppercase">
+            <span className="text-xs font-bold text-blue-600 dark:text-blue-400 tracking-wider uppercase">
               AI Engagement & Intelligence Agent
             </span>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">
-            SocialPulse Dashboard
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-1">
+            Kazam Dashboard
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-600 dark:text-[#AAB4CC] font-medium mt-1">
             "Understand your audience. Learn from your content. Create what matters."
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           {/* Platform Pills */}
-          <div className="flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200">
+          <div className="flex items-center bg-slate-100 dark:bg-[#101625] p-1 rounded-lg border border-slate-200 dark:border-indigo-500/20">
             <button
               onClick={() => setPlatform('LinkedIn')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
                 platform === 'LinkedIn'
-                  ? 'bg-white text-blue-700 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-[#172033] text-blue-700 dark:text-blue-400 shadow-sm border border-slate-200 dark:border-indigo-500/30'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium'
               }`}
             >
-              <Linkedin className="h-3.5 w-3.5 text-blue-600" />
+              <Linkedin className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
               <span>LinkedIn</span>
             </button>
             <button
               onClick={() => setPlatform('Instagram')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
                 platform === 'Instagram'
-                  ? 'bg-white text-pink-700 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white dark:bg-[#172033] text-pink-700 dark:text-pink-400 shadow-sm border border-slate-200 dark:border-indigo-500/30'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium'
               }`}
             >
-              <Instagram className="h-3.5 w-3.5 text-pink-600" />
+              <Instagram className="h-3.5 w-3.5 text-pink-600 dark:text-pink-400" />
               <span>Instagram</span>
             </button>
           </div>
@@ -92,7 +89,7 @@ export default function Dashboard() {
           <button
             onClick={fetchStats}
             disabled={loading}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition-colors shadow-sm disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-indigo-500/25 bg-white dark:bg-[#121A2A] hover:bg-slate-50 dark:hover:bg-[#172033] text-slate-700 dark:text-[#F5F7FF] hover:text-slate-900 text-xs font-bold transition-colors shadow-sm disabled:opacity-50"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
             <span>Refresh</span>
@@ -101,7 +98,7 @@ export default function Dashboard() {
       </div>
 
       {error && (
-        <div className="p-4 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-center gap-2.5">
+        <div className="p-4 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-sm flex items-center gap-2.5">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>{error}</span>
         </div>
@@ -114,13 +111,13 @@ export default function Dashboard() {
             <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-500/30 text-blue-200 border border-blue-400/30">
               Hero Decision Engine
             </span>
-            <span className="text-xs text-blue-200">Platform: {platform}</span>
+            <span className="text-xs text-blue-200 font-semibold">Platform: {platform}</span>
           </div>
-          <h2 className="text-xl font-bold tracking-tight">
+          <h2 className="text-xl font-bold tracking-tight text-white">
             Unsure What to Post on {platform} Today?
           </h2>
           <p className="text-xs text-blue-100/90 leading-relaxed">
-            SocialPulse synthesizes your historical engagement outcomes, active Hindsight memories, and current momentum trends to prescribe the optimal topic, format, and copy.
+            Kazam synthesizes your historical engagement outcomes, active Hindsight memories, and current momentum trends to prescribe the optimal topic, format, and copy.
           </p>
         </div>
 
@@ -146,86 +143,86 @@ export default function Dashboard() {
       {/* Primary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Total Posts */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
+        <div className="bg-white dark:bg-[#121A2A] p-5 rounded-xl border border-slate-200 dark:border-indigo-500/25 shadow-sm transition-colors">
+          <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
             <span>Posts ({platform})</span>
-            <BarChart3 className="h-4 w-4 text-slate-400" />
+            <BarChart3 className="h-4 w-4 text-slate-400 dark:text-slate-500" />
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-slate-900">
+            <span className="text-2xl font-extrabold text-slate-900 dark:text-white">
               {loading ? '...' : stats?.totalPosts ?? 0}
             </span>
-            <span className="text-xs text-slate-500 font-medium">in MongoDB</span>
+            <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">in MongoDB</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">Platform telemetry</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-500 mt-1">Platform telemetry</p>
         </div>
 
         {/* Average Engagement */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
+        <div className="bg-white dark:bg-[#121A2A] p-5 rounded-xl border border-slate-200 dark:border-indigo-500/25 shadow-sm transition-colors">
+          <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
             <span>Average Engagement</span>
-            <TrendingUp className="h-4 w-4 text-emerald-600" />
+            <TrendingUp className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-slate-900">
+            <span className="text-2xl font-extrabold text-slate-900 dark:text-white">
               {loading ? '...' : `${stats?.avgEngagement ?? 0}%`}
             </span>
-            <span className="text-xs font-semibold text-emerald-600">
+            <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
               +{((stats?.avgEngagement ?? 0) - (stats?.benchmarkRate ?? 2.5)).toFixed(2)}% vs baseline
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">Account baseline: 2.50%</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-500 mt-1">Account baseline: 2.50%</p>
         </div>
 
         {/* Best Performing Content Type */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
+        <div className="bg-white dark:bg-[#121A2A] p-5 rounded-xl border border-slate-200 dark:border-indigo-500/25 shadow-sm transition-colors">
+          <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
             <span>Top Performing Style</span>
             <Sparkles className="h-4 w-4 text-amber-500" />
           </div>
           <div className="mt-3">
-            <p className="text-sm font-bold text-slate-900 truncate">
+            <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
               {loading ? '...' : stats?.bestContentType ?? 'Technical Story'}
             </p>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Avg rate: <span className="font-semibold text-emerald-600">{stats?.bestContentAvg ?? 0}%</span>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
+              Avg rate: <span className="font-bold text-emerald-600 dark:text-emerald-400">{stats?.bestContentAvg ?? 0}%</span>
             </p>
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">Derived from {platform} metrics</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-500 mt-1">Derived from {platform} metrics</p>
         </div>
 
         {/* Retained Experiences */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
+        <div className="bg-white dark:bg-[#121A2A] p-5 rounded-xl border border-slate-200 dark:border-indigo-500/25 shadow-sm transition-colors">
+          <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
             <span>Retained Experiences</span>
-            <BrainCircuit className="h-4 w-4 text-blue-600" />
+            <BrainCircuit className="h-4 w-4 text-blue-600 dark:text-blue-400" />
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-slate-900">
+            <span className="text-2xl font-extrabold text-slate-900 dark:text-white">
               {loading ? '...' : stats?.totalMemories ?? 0}
             </span>
-            <span className="text-xs text-blue-700 font-medium bg-blue-50 px-2 py-0.5 rounded">
+            <span className="text-xs font-bold bg-[#EEF2FF] text-[#2563EB] border border-blue-200 dark:bg-blue-950/50 dark:text-blue-300 dark:border-blue-800/40 px-2.5 py-0.5 rounded-md shadow-xs">
               Retained Experiences
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">Bank: Social-Media-Agent</p>
+          <p className="text-[11px] text-slate-500 dark:text-slate-500 mt-1">Bank: Social-Media-Agent</p>
         </div>
       </div>
 
       {/* Main Grid: Recent Learning & How It Works */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Recent Learning from Hindsight */}
-        <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5">
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="lg:col-span-7 bg-white dark:bg-[#121A2A] rounded-xl border border-slate-200 dark:border-indigo-500/25 shadow-sm p-6 space-y-5 transition-colors">
+          <div className="flex items-center justify-between border-b border-slate-200 dark:border-indigo-500/20 pb-3">
             <div className="flex items-center gap-2">
-              <BrainCircuit className="h-4 w-4 text-blue-600" />
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900">
+              <BrainCircuit className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white">
                 Recent Experiences Retained in Hindsight
               </h2>
             </div>
             <Link
               to="/insights"
-              className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
+              className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center gap-1 transition-colors"
             >
               <span>View All</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -234,26 +231,26 @@ export default function Dashboard() {
 
           <div className="space-y-3">
             {loading ? (
-              <div className="py-8 text-center text-xs text-slate-400">
+              <div className="py-8 text-center text-xs text-slate-500 dark:text-slate-400 font-medium">
                 Retrieving active memories from Hindsight Cloud...
               </div>
             ) : stats?.recentLearnings?.length > 0 ? (
               stats.recentLearnings.map((item, idx) => (
                 <div
                   key={item.id || idx}
-                  className="p-3.5 rounded-lg border border-slate-100 bg-slate-50/70 text-xs space-y-1.5"
+                  className="p-4 rounded-xl border border-slate-200 dark:border-indigo-500/20 bg-[#F8FAFC] dark:bg-[#172033] text-xs space-y-1.5 shadow-sm transition-colors"
                 >
-                  <div className="flex items-center justify-between text-[11px] text-slate-400">
-                    <span className="font-mono text-blue-700 font-medium">Memory #{idx + 1}</span>
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+                    <span className="font-mono text-blue-700 dark:text-blue-400 font-bold">Memory #{idx + 1}</span>
                     {item.date && (
                       <span className="font-mono">{new Date(item.date).toLocaleDateString()}</span>
                     )}
                   </div>
-                  <FormattedText text={item.text} className="text-slate-800 leading-relaxed font-sans text-xs" />
+                  <FormattedText text={item.text} className="text-slate-800 dark:text-[#E2E8F0] leading-relaxed font-sans text-xs" />
                 </div>
               ))
             ) : (
-              <p className="text-xs text-slate-400 py-4 text-center">
+              <p className="text-xs text-slate-500 dark:text-slate-400 py-4 text-center font-medium">
                 No memories retained yet.
               </p>
             )}
@@ -263,77 +260,85 @@ export default function Dashboard() {
         {/* Right Column: Quick Navigation Hub */}
         <div className="lg:col-span-5 space-y-5">
           {/* Quick Access Card */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-3">
+          <div className="bg-white dark:bg-[#121A2A] rounded-xl border border-slate-200 dark:border-indigo-500/25 shadow-sm p-6 space-y-4 transition-colors">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white border-b border-slate-200 dark:border-indigo-500/20 pb-3">
               Intelligence Modules
             </h2>
 
             <div className="space-y-2.5">
               <Link
                 to="/what-to-post"
-                className="flex items-center justify-between p-3 rounded-lg border border-blue-200 bg-blue-50/50 hover:bg-blue-50 transition-colors group"
+                className="flex items-center justify-between p-3.5 rounded-xl border border-blue-200 dark:border-blue-500/30 bg-[#F0F7FF] dark:bg-blue-950/25 hover:bg-blue-100/70 dark:hover:bg-blue-950/40 transition-all group shadow-sm"
               >
                 <div className="flex items-center gap-3">
-                  <HelpCircle className="h-4 w-4 text-blue-600" />
+                  <HelpCircle className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                   <div>
-                    <span className="text-xs font-bold text-slate-900 block group-hover:text-blue-700">What Should I Post?</span>
-                    <span className="text-[11px] text-slate-500">Prescriptive next-post recommendation</span>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      What Should I Post?
+                    </span>
+                    <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Prescriptive next-post recommendation</span>
                   </div>
                 </div>
-                <ArrowRight className="h-3.5 w-3.5 text-blue-600" />
+                <ArrowRight className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
               </Link>
 
               <Link
                 to="/create"
-                className="flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors group"
+                className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-indigo-500/20 bg-white dark:bg-[#172033]/60 hover:bg-slate-50 dark:hover:bg-[#172033] hover:border-slate-300 dark:hover:border-indigo-500/40 transition-all group shadow-sm"
               >
                 <div className="flex items-center gap-3">
-                  <Sparkles className="h-4 w-4 text-indigo-600" />
+                  <Sparkles className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                   <div>
-                    <span className="text-xs font-bold text-slate-900 block group-hover:text-blue-700">Content Studio</span>
-                    <span className="text-[11px] text-slate-500">Captions, hooks, reels & carousels</span>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      Content Studio
+                    </span>
+                    <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Captions, hooks, reels & carousels</span>
                   </div>
                 </div>
-                <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600" />
+                <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
               </Link>
 
               <Link
                 to="/audience"
-                className="flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors group"
+                className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-indigo-500/20 bg-white dark:bg-[#172033]/60 hover:bg-slate-50 dark:hover:bg-[#172033] hover:border-slate-300 dark:hover:border-indigo-500/40 transition-all group shadow-sm"
               >
                 <div className="flex items-center gap-3">
-                  <BarChart3 className="h-4 w-4 text-emerald-600" />
+                  <BarChart3 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   <div>
-                    <span className="text-xs font-bold text-slate-900 block group-hover:text-blue-700">Audience Intelligence</span>
-                    <span className="text-[11px] text-slate-500">Interests, preferred formats & weak topics</span>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      Audience Intelligence
+                    </span>
+                    <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Interests, preferred formats & weak topics</span>
                   </div>
                 </div>
-                <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600" />
+                <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
               </Link>
 
               <Link
                 to="/trends"
-                className="flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors group"
+                className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 dark:border-indigo-500/20 bg-white dark:bg-[#172033]/60 hover:bg-slate-50 dark:hover:bg-[#172033] hover:border-slate-300 dark:hover:border-indigo-500/40 transition-all group shadow-sm"
               >
                 <div className="flex items-center gap-3">
                   <Flame className="h-4 w-4 text-amber-500" />
                   <div>
-                    <span className="text-xs font-bold text-slate-900 block group-hover:text-blue-700">Trend Intelligence</span>
-                    <span className="text-[11px] text-slate-500">Bridge momentum trends to your audience</span>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      Trend Intelligence
+                    </span>
+                    <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">Bridge momentum trends to your audience</span>
                   </div>
                 </div>
-                <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600" />
+                <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
               </Link>
             </div>
           </div>
 
           {/* Cognitive Learning Loop Concept */}
-          <div className="p-4 rounded-xl bg-slate-900 text-white space-y-2 text-xs">
+          <div className="p-4 rounded-xl bg-slate-900 dark:bg-[#0A0E1A] text-white border border-slate-800 dark:border-indigo-500/20 space-y-2 text-xs shadow-sm">
             <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 block">
               Continuous Intelligence
             </span>
             <p className="text-slate-300 leading-relaxed text-[11px]">
-              "SocialPulse learns what works for YOUR audience and uses that knowledge to improve what you post next."
+              "Kazam learns what works for YOUR audience and uses that knowledge to improve what you post next."
             </p>
             <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-400 font-mono">
               MongoDB: Structured Telemetry • Hindsight: Experiential Memory

@@ -78,7 +78,7 @@ export default function WhatShouldIPost() {
               </h1>
             </div>
             <p className="text-sm text-slate-500 mt-1">
-              SocialPulse analyzes your <span className="font-semibold text-slate-700">{platform}</span> audience, past wins/flops from Hindsight memory, and timely trends to prescribe your next high-leverage post.
+              Kazam analyzes your <span className="font-semibold text-slate-700">{platform}</span> audience, past wins/flops from Hindsight memory, and timely trends to prescribe your next high-leverage post.
             </p>
           </div>
 
@@ -161,7 +161,7 @@ export default function WhatShouldIPost() {
             ) : (
               <>
                 <Sparkles className="h-4 w-4" />
-                <span>Ask SocialPulse: What Should I Post?</span>
+                <span>Ask Kazam: What Should I Post?</span>
               </>
             )}
           </button>

@@ -16,20 +16,20 @@ export const checkPasswordCriteria = (password = '', confirmPassword = null) => 
 
   let strengthLabel = 'Too weak';
   let strengthColor = 'bg-rose-500';
-  let strengthTextColor = 'text-rose-600';
+  let strengthTextColor = 'text-rose-600 dark:text-rose-400';
 
   if (score === 2) {
     strengthLabel = 'Fair';
     strengthColor = 'bg-amber-500';
-    strengthTextColor = 'text-amber-600';
+    strengthTextColor = 'text-amber-600 dark:text-amber-400';
   } else if (score === 3) {
     strengthLabel = 'Good';
     strengthColor = 'bg-blue-500';
-    strengthTextColor = 'text-blue-600';
+    strengthTextColor = 'text-blue-600 dark:text-blue-400';
   } else if (score >= 4) {
     strengthLabel = 'Strong';
     strengthColor = 'bg-emerald-500';
-    strengthTextColor = 'text-emerald-600';
+    strengthTextColor = 'text-emerald-600 dark:text-emerald-400';
   }
 
   const isValid = minLength && hasUppercase && hasLowercase && hasNumberOrSymbol && matches;
@@ -68,55 +68,55 @@ export default function PasswordValidator({ password, confirmPassword = null, sh
       {/* Strength Bar */}
       <div className="space-y-1">
         <div className="flex items-center justify-between text-[11px]">
-          <span className="text-slate-500 font-medium">Password strength:</span>
+          <span className="text-slate-500 dark:text-slate-400 font-medium">Password strength:</span>
           <span className={`font-semibold ${strengthTextColor}`}>{strengthLabel}</span>
         </div>
-        <div className="grid grid-cols-4 gap-1.5 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden p-[1px]">
-          <div className={`h-full rounded-full transition-all duration-300 ${score >= 1 ? strengthColor : 'bg-slate-200'}`} />
-          <div className={`h-full rounded-full transition-all duration-300 ${score >= 2 ? strengthColor : 'bg-slate-200'}`} />
-          <div className={`h-full rounded-full transition-all duration-300 ${score >= 3 ? strengthColor : 'bg-slate-200'}`} />
-          <div className={`h-full rounded-full transition-all duration-300 ${score >= 4 ? strengthColor : 'bg-slate-200'}`} />
+        <div className="grid grid-cols-4 gap-1.5 h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden p-[1px]">
+          <div className={`h-full rounded-full transition-all duration-300 ${score >= 1 ? strengthColor : 'bg-slate-200 dark:bg-slate-700'}`} />
+          <div className={`h-full rounded-full transition-all duration-300 ${score >= 2 ? strengthColor : 'bg-slate-200 dark:bg-slate-700'}`} />
+          <div className={`h-full rounded-full transition-all duration-300 ${score >= 3 ? strengthColor : 'bg-slate-200 dark:bg-slate-700'}`} />
+          <div className={`h-full rounded-full transition-all duration-300 ${score >= 4 ? strengthColor : 'bg-slate-200 dark:bg-slate-700'}`} />
         </div>
       </div>
 
       {/* Criteria check items */}
       {showDetails && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 text-[11px] text-slate-500">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1 text-[11px] text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-1.5">
             {minLength ? (
-              <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
             ) : (
-              <div className="w-3.5 h-3.5 rounded-full border border-slate-300 shrink-0" />
+              <div className="w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-slate-600 shrink-0" />
             )}
-            <span className={minLength ? 'text-slate-700 font-medium' : ''}>At least 6 characters</span>
+            <span className={minLength ? 'text-slate-700 dark:text-slate-300 font-medium' : ''}>At least 6 characters</span>
           </div>
 
           <div className="flex items-center gap-1.5">
             {hasUppercase ? (
-              <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
             ) : (
-              <div className="w-3.5 h-3.5 rounded-full border border-slate-300 shrink-0" />
+              <div className="w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-slate-600 shrink-0" />
             )}
-            <span className={hasUppercase ? 'text-slate-700 font-medium' : ''}>One uppercase (A-Z)</span>
+            <span className={hasUppercase ? 'text-slate-700 dark:text-slate-300 font-medium' : ''}>One uppercase (A-Z)</span>
           </div>
 
           <div className="flex items-center gap-1.5">
             {hasNumberOrSymbol ? (
-              <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
             ) : (
-              <div className="w-3.5 h-3.5 rounded-full border border-slate-300 shrink-0" />
+              <div className="w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-slate-600 shrink-0" />
             )}
-            <span className={hasNumberOrSymbol ? 'text-slate-700 font-medium' : ''}>Number or symbol</span>
+            <span className={hasNumberOrSymbol ? 'text-slate-700 dark:text-slate-300 font-medium' : ''}>Number or symbol</span>
           </div>
 
           {confirmPassword !== null && (
             <div className="flex items-center gap-1.5">
               {matches ? (
-                <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
               ) : (
                 <X className="w-3.5 h-3.5 text-rose-500 shrink-0" />
               )}
-              <span className={matches ? 'text-slate-700 font-medium' : 'text-rose-500'}>
+              <span className={matches ? 'text-slate-700 dark:text-slate-300 font-medium' : 'text-rose-500'}>
                 Passwords match
               </span>
             </div>

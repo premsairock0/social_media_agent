@@ -15,7 +15,7 @@ export default function ProtectedRoute({ children }) {
             <Sparkles className="w-6 h-6 animate-spin text-white" />
           </div>
           <div className="text-center">
-            <h3 className="font-bold text-slate-800 text-sm">Authenticating SocialPulse</h3>
+            <h3 className="font-bold text-slate-800 text-sm">Authenticating Kazam</h3>
             <p className="text-xs text-slate-500 mt-1">Verifying secure session...</p>
           </div>
         </div>
