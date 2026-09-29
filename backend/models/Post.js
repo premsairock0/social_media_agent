@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema(
   {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
     brandId: { type: mongoose.Schema.Types.ObjectId, ref: 'Brand', required: false },
     content: { type: String, required: true },
     platform: { type: String, default: 'LinkedIn', enum: ['LinkedIn', 'Instagram'] },

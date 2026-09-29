@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 
+const authRoutes = require('./routes/authRoutes');
+const agentRoutes = require('./routes/agentRoutes');
 const strategyRoutes = require('./routes/strategyRoutes');
 const performanceRoutes = require('./routes/performanceRoutes');
 const postRoutes = require('./routes/postRoutes');
@@ -21,6 +23,8 @@ app.use(cors());
 app.use(express.json());
 
 // API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/agent', agentRoutes);
 app.use('/api/strategy', strategyRoutes);
 app.use('/api/performance', performanceRoutes);
 app.use('/api/posts', postRoutes);
@@ -36,6 +40,7 @@ app.get('/api/health', (req, res) => {
     tagline: 'Understand your audience. Learn from your content. Create what matters.',
     hindsightStatus: 'active',
     platforms: ['LinkedIn', 'Instagram'],
+    auth: 'JWT Enabled',
     timestamp: new Date().toISOString(),
   });
 });

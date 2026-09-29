@@ -8,6 +8,45 @@ const api = axios.create({
   timeout: 60000, // Allow sufficient time for LLM + Hindsight Cloud operations
 });
 
+// Request interceptor: attach JWT token if present in localStorage
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor: handle 401 Unauthorized
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Clear token if invalid or expired (except for login/register/reset endpoints)
+      const currentPath = window.location.pathname;
+      if (!currentPath.includes('/login') && !currentPath.includes('/signup') && !currentPath.includes('/forgot-password')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Auth endpoints
+export const loginUser = (credentials) => api.post('/auth/login', credentials);
+export const registerUser = (userData) => api.post('/auth/register', userData);
+export const getMe = () => api.get('/auth/me');
+export const forgotPassword = (payload) => api.post('/auth/forgot-password', payload);
+export const resetPassword = (payload) => api.post('/auth/reset-password', payload);
+
+// AI Chatbot / Agent endpoint (Accessible only to authenticated users)
+export const chatWithAgent = (payload) => api.post('/agent/chat', payload);
+
 // Dashboard aggregated stats (filterable by platform)
 export const getDashboardStats = (platform) => 
   api.get('/posts/stats', { params: platform && platform !== 'All' ? { platform } : {} });

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const postMetricSchema = new mongoose.Schema(
   {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true },
     postId: { type: mongoose.Schema.Types.ObjectId, ref: 'Post', required: false },
     likes: { type: Number, default: 0 },
     comments: { type: Number, default: 0 },

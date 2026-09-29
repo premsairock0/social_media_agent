@@ -1,23 +1,37 @@
 const Post = require('../models/Post');
 const PostMetric = require('../models/PostMetric');
+const UserMemory = require('../models/UserMemory');
 const hindsightService = require('../services/hindsightService');
 
 /**
  * Audience Controller - SocialPulse
  * Answers: "What does my audience care about?"
- * Combines mathematical MongoDB aggregations with Hindsight cognitive reflection.
+ * Combines mathematical MongoDB aggregations for authenticated user with Hindsight memory.
  */
 exports.getAudienceInsights = async (req, res) => {
   try {
     const { platform = 'LinkedIn' } = req.query;
+    const userId = req.user ? req.user._id : null;
 
-    console.log(`[SocialPulse] Computing Audience Intelligence for platform: ${platform}...`);
+    console.log(`[SocialPulse] Computing Audience Intelligence for user: ${userId || 'guest'}, platform: ${platform}...`);
 
-    // 1. Fetch posts and metrics for platform
-    const query = platform && platform !== 'All' ? { platform } : {};
-    const posts = await Post.find(query).lean();
+    // 1. Fetch user-specific posts and metrics for platform
+    const postFilter = userId ? { userId } : {};
+    if (platform && platform !== 'All') {
+      postFilter.platform = platform;
+    }
+
+    let posts = await Post.find(postFilter).lean();
+
+    // Fallback if brand new user has 0 posts: include seeds so charts render nicely
+    if (posts.length === 0 && userId) {
+      posts = await Post.find({
+        $or: [{ userId }, { isSeed: true }],
+        ...(platform && platform !== 'All' ? { platform } : {}),
+      }).lean();
+    }
+
     const postIds = posts.map((p) => p._id);
-
     const metrics = await PostMetric.find({ postId: { $in: postIds } }).lean();
 
     // Map metrics by postId
@@ -91,16 +105,20 @@ exports.getAudienceInsights = async (req, res) => {
         isSeed: p.isSeed,
       }));
 
-    // 4. Query Hindsight reflection for qualitative audience memory
+    // 4. Query user memory or Hindsight reflection
     let hindsightSynthesis = '';
-    try {
-      const reflectRes = await hindsightService.reflectMemory(
-        `What specific themes, topics, and question formats does the ${platform} audience care most about, and what should be avoided?`
-      );
-      hindsightSynthesis = reflectRes.text || '';
-    } catch (err) {
-      console.warn('[AudienceController] Hindsight reflect fallback:', err.message);
-      hindsightSynthesis = 'The audience consistently engages with transparent engineering journeys, real-world benchmarks, and actionable resource guides, while dismissing generic sales promotions.';
+    const userMemories = userId ? await UserMemory.find({ userId }).limit(3).lean() : [];
+    if (userMemories.length > 0) {
+      hindsightSynthesis = userMemories.map(m => m.content).join(' ');
+    } else {
+      try {
+        const reflectRes = await hindsightService.reflectMemory(
+          `What specific themes, topics, and question formats does the ${platform} audience care most about, and what should be avoided?`
+        );
+        hindsightSynthesis = reflectRes.text || '';
+      } catch (err) {
+        hindsightSynthesis = 'The audience consistently engages with transparent engineering journeys, real-world benchmarks, and actionable resource guides, while dismissing generic sales promotions.';
+      }
     }
 
     return res.status(200).json({
@@ -113,7 +131,7 @@ exports.getAudienceInsights = async (req, res) => {
         weakTopics,
         hindsightSynthesis,
         dataSource: {
-          label: 'Grounded in MongoDB Historical Telemetry & Hindsight Memory',
+          label: 'Grounded in User Historical Telemetry & Hindsight Memory',
           seedCount: enrichedPosts.filter((p) => p.isSeed).length,
           liveCount: enrichedPosts.filter((p) => !p.isSeed).length,
         },

@@ -1,15 +1,33 @@
 const Post = require('../models/Post');
 const PostMetric = require('../models/PostMetric');
+const UserMemory = require('../models/UserMemory');
+const hindsightService = require('../services/hindsightService');
 
+/**
+ * GET /api/posts
+ * Fetch user-specific posts (filterable by platform)
+ */
 exports.getPosts = async (req, res) => {
   try {
     const { platform } = req.query;
-    const filter = {};
+    const userId = req.user ? req.user._id : null;
+
+    // Filter by user ID if authenticated
+    const filter = userId ? { userId } : {};
+
     if (platform && platform !== 'All') {
       filter.platform = platform;
     }
 
-    const posts = await Post.find(filter).sort({ createdAt: -1 });
+    let posts = await Post.find(filter).sort({ createdAt: -1 });
+
+    // Fallback if brand new user has 0 posts: also show public seeds so dashboard isn't completely empty
+    if (posts.length === 0 && userId) {
+      posts = await Post.find({
+        $or: [{ userId }, { isSeed: true }],
+        ...(platform && platform !== 'All' ? { platform } : {}),
+      }).sort({ createdAt: -1 });
+    }
     
     // Fetch metrics for each post
     const postsWithMetrics = await Promise.all(
@@ -25,10 +43,15 @@ exports.getPosts = async (req, res) => {
 
     res.status(200).json({ success: true, count: postsWithMetrics.length, data: postsWithMetrics });
   } catch (error) {
+    console.error('[getPosts Error]:', error);
     res.status(500).json({ error: 'Failed to fetch posts', details: error.message });
   }
 };
 
+/**
+ * POST /api/posts
+ * Create new user-specific post
+ */
 exports.createPost = async (req, res) => {
   try {
     const { 
@@ -48,6 +71,7 @@ exports.createPost = async (req, res) => {
     } = req.body;
 
     const post = new Post({ 
+      userId: req.user ? req.user._id : undefined,
       content, 
       topic, 
       style, 
@@ -66,21 +90,35 @@ exports.createPost = async (req, res) => {
     await post.save();
     res.status(201).json({ success: true, data: post });
   } catch (error) {
+    console.error('[createPost Error]:', error);
     res.status(500).json({ error: 'Failed to create post', details: error.message });
   }
 };
 
+/**
+ * GET /api/posts/stats
+ * Dashboard aggregated stats scoped to authenticated user
+ */
 exports.getDashboardStats = async (req, res) => {
   try {
-    const hindsightService = require('../services/hindsightService');
     const { platform } = req.query;
+    const userId = req.user ? req.user._id : null;
     
-    const postFilter = {};
+    const postFilter = userId ? { userId } : {};
     if (platform && platform !== 'All') {
       postFilter.platform = platform;
     }
 
-    const posts = await Post.find(postFilter);
+    let posts = await Post.find(postFilter);
+
+    // If new user has no posts yet, fallback to seed posts to calculate baseline
+    if (posts.length === 0 && userId) {
+      posts = await Post.find({
+        $or: [{ userId }, { isSeed: true }],
+        ...(platform && platform !== 'All' ? { platform } : {}),
+      });
+    }
+
     const postIds = posts.map(p => p._id);
     const metrics = await PostMetric.find(postIds.length > 0 ? { postId: { $in: postIds } } : {});
 
@@ -91,7 +129,7 @@ exports.getDashboardStats = async (req, res) => {
       avgEngagement = Number((sum / metrics.length).toFixed(2));
     }
 
-    // Aggregate by style
+    // Aggregate by style for user
     const styleAgg = {};
     for (const p of posts) {
       const metric = metrics.find((m) => m.postId && m.postId.toString() === p._id.toString());
@@ -112,16 +150,30 @@ exports.getDashboardStats = async (req, res) => {
       }
     }
 
-    // Fetch real memories from Hindsight (using limit 100 for comprehensive count)
-    const memories = await hindsightService.listMemories(100);
-    const totalMemories = memories.length;
+    // Fetch user-specific memories from MongoDB
+    let userMemories = userId ? await UserMemory.find({ userId }).sort({ createdAt: -1 }).limit(10) : [];
+    
+    // If user has none yet, fetch from Hindsight bank
+    let totalMemories = userMemories.length;
+    let recentLearnings = [];
 
-    const recentLearnings = memories.slice(0, 5).map((m) => ({
-      id: m.id,
-      text: m.content,
-      date: m.date,
-      type: m.factType,
-    }));
+    if (totalMemories > 0) {
+      recentLearnings = userMemories.slice(0, 5).map((m) => ({
+        id: m._id,
+        text: m.content,
+        date: m.createdAt,
+        type: m.factType || 'learned_experience',
+      }));
+    } else {
+      const cloudMemories = await hindsightService.listMemories(100);
+      totalMemories = cloudMemories.length;
+      recentLearnings = cloudMemories.slice(0, 5).map((m) => ({
+        id: m.id,
+        text: m.content,
+        date: m.date,
+        type: m.factType,
+      }));
+    }
 
     return res.status(200).json({
       success: true,
@@ -135,6 +187,7 @@ exports.getDashboardStats = async (req, res) => {
         benchmarkRate: 2.5,
         recentLearnings,
         bankId: hindsightService.bankId,
+        user: req.user ? { name: req.user.name, email: req.user.email } : null,
       },
     });
   } catch (error) {

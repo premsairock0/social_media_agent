@@ -1,8 +1,18 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import { ContentProvider } from './context/ContentContext';
+import ProtectedRoute from './components/common/ProtectedRoute';
 import AppLayout from './components/layout/AppLayout';
+
+// Public Auth Pages
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
+import ForgotPassword from './pages/ForgotPassword';
+
+// Protected Dashboard & Agent Pages
 import Dashboard from './pages/Dashboard';
+import AgentChat from './pages/AgentChat';
 import WhatShouldIPost from './pages/WhatShouldIPost';
 import ContentStudio from './pages/ContentStudio';
 import StrategyView from './pages/StrategyView';
@@ -14,23 +24,41 @@ import LearnedInsights from './pages/LearnedInsights';
 
 export default function App() {
   return (
-    <ContentProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<AppLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="what-to-post" element={<WhatShouldIPost />} />
-            <Route path="create" element={<ContentStudio />} />
-            <Route path="strategy" element={<StrategyView />} />
-            <Route path="audience" element={<AudienceIntelligence />} />
-            <Route path="trends" element={<TrendIntelligence />} />
-            <Route path="history" element={<ContentHistory />} />
-            <Route path="performance" element={<PerformanceLogger />} />
-            <Route path="insights" element={<LearnedInsights />} />
+    <BrowserRouter>
+      <AuthProvider>
+        <ContentProvider>
+          <Routes>
+            {/* Public Authentication Routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+
+            {/* Protected Dashboard & Agent Routes (Authenticated Users Only) */}
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="agent" element={<AgentChat />} />
+              <Route path="what-to-post" element={<WhatShouldIPost />} />
+              <Route path="create" element={<ContentStudio />} />
+              <Route path="strategy" element={<StrategyView />} />
+              <Route path="audience" element={<AudienceIntelligence />} />
+              <Route path="trends" element={<TrendIntelligence />} />
+              <Route path="history" element={<ContentHistory />} />
+              <Route path="performance" element={<PerformanceLogger />} />
+              <Route path="insights" element={<LearnedInsights />} />
+            </Route>
+
+            {/* Catch-all redirect */}
             <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </ContentProvider>
+          </Routes>
+        </ContentProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }

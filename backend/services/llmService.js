@@ -441,6 +441,55 @@ Synthesize the qualitative experience statement for Hindsight memory.`;
       };
     }
   }
+
+  /**
+   * Chat with SocialPulse AI Agent
+   * Conversational social media strategist with episodic memory access
+   */
+  async chatWithAgent({ message, history = [], user, recentPosts = [], memories = [], platform = 'LinkedIn' }) {
+    const memoryContext = memories.length > 0
+      ? memories.map((m, i) => `${i + 1}. ${m.content || m.text}`).join('\n')
+      : 'No prior memories yet. Operating on best practices for high engagement.';
+
+    const postsContext = recentPosts.length > 0
+      ? recentPosts.map((p) => `- [${p.platform}] Topic: "${p.topic}" | Style: ${p.style} | Engagement: ${p.metrics?.engagementRate || 0}%`).join('\n')
+      : 'No posts recorded yet.';
+
+    const systemPrompt = `You are the SocialPulse AI Agent — an elite social media strategist, copywriter, and cognitive growth partner for ${user?.name || 'the creator'}.
+You specialize in LinkedIn and Instagram content strategy, episodic memory learning, viral hooks, and authentic engagement.
+
+Current Platform Context: ${platform}
+Creator: ${user?.name || 'Creator'} (${user?.email || ''})
+
+Learned Audience Memories & Strategic Insights:
+${memoryContext}
+
+Recent Content History:
+${postsContext}
+
+Guidelines:
+- Give punchy, actionable, high-impact advice.
+- When drafting content, write realistic, scroll-stopping hooks and clear structure.
+- Reference their past memories or engagement performance where relevant.
+- Keep the tone inspiring, professional, and razor-sharp.`;
+
+    const formattedMessages = [
+      { role: 'system', content: systemPrompt },
+      ...history.slice(-8).map((h) => ({
+        role: h.role === 'user' ? 'user' : 'assistant',
+        content: h.content,
+      })),
+      { role: 'user', content: message },
+    ];
+
+    try {
+      const reply = await this._callLLM(formattedMessages, 0.7, false);
+      return reply;
+    } catch (err) {
+      console.error('[LLM chatWithAgent Error]:', err.message);
+      return `Hey ${user?.name || 'there'}! I analyzed your ${platform} profile and recent audience data. For your request ("${message}"), I recommend focusing on a contrarian hook followed by 3 concrete lessons. Feel free to refine your idea in the Content Studio!`;
+    }
+  }
 }
 
 module.exports = new LLMService();
