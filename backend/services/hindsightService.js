@@ -38,7 +38,11 @@ class HindsightService {
    * @returns {Promise<Object>} Hindsight API retain response
    */
   async retainMemory(experience) {
-    console.log(`[Hindsight] RETAINING experience to bank "${this.bankId}":\n"${experience.content.substring(0, 100)}..."`);
+    console.log(`\n========================================`);
+    console.log(`HINDSIGHT RETAIN`);
+    console.log(`Memory being stored:`);
+    console.log(experience.content);
+    console.log(`========================================`);
     
     try {
       const stringifiedMetadata = {};
@@ -56,6 +60,13 @@ class HindsightService {
           metadata: stringifiedMetadata,
         }
       );
+
+      const memId = response?.id || response?.item_id || response?.items?.[0]?.id || response?.document_id || 'bank-confirmed';
+      console.log(`Memory retained`);
+      console.log(`Bank: ${this.bankId}`);
+      console.log(`Memory ID:\n${memId}`);
+      console.log(`========================================\n`);
+
       return response;
     } catch (error) {
       console.error(`[Hindsight Retain Error]: ${error.message}`);
@@ -74,14 +85,17 @@ class HindsightService {
       ? query 
       : `${query.idea || ''} ${query.goal || ''}`.trim();
 
-    console.log(`[Hindsight] RECALLING memories from bank "${this.bankId}" for query: "${queryText}"`);
+    console.log(`\n========================================`);
+    console.log(`HINDSIGHT RECALL`);
+    console.log(`Query:\n${queryText}`);
+    console.log(`========================================`);
 
     try {
       const response = await this.client.recall(this.bankId, queryText);
       const results = response.results || [];
 
       // Transform raw Hindsight items into consistent objects
-      return results.slice(0, limit).map((item) => ({
+      const formatted = results.slice(0, limit).map((item) => ({
         id: item.id,
         content: item.text,
         relevanceScore: item.scores?.semantic ? Number(item.scores.semantic.toFixed(3)) : 1,
@@ -90,6 +104,14 @@ class HindsightService {
         entities: item.entities || [],
         mentionedAt: item.mentioned_at,
       }));
+
+      console.log(`Relevant memories:`);
+      formatted.forEach((m, idx) => {
+        console.log(`[#${idx + 1}] (score: ${m.relevanceScore}) ${m.content}`);
+      });
+      console.log(`========================================\n`);
+
+      return formatted;
     } catch (error) {
       console.error(`[Hindsight Recall Error]: ${error.message}`);
       throw error;
@@ -105,7 +127,10 @@ class HindsightService {
    * Deduplicates by memory ID and returns ranked insights with angle tags.
    */
   async recallMultiAngle({ topic = '', platform = 'LinkedIn', audience = 'Tech Community', goal = 'Engagement' }, perAngleLimit = 4) {
-    console.log(`[Hindsight] MULTI-ANGLE RECALL for: [Platform: ${platform}] [Topic: "${topic}"] [Goal: ${goal}]`);
+    console.log(`\n========================================`);
+    console.log(`HINDSIGHT RECALL (MULTI-ANGLE)`);
+    console.log(`Query: [Platform: ${platform}] [Topic: "${topic}"] [Audience: "${audience}"] [Goal: "${goal}"]`);
+    console.log(`========================================`);
 
     const angles = [
       { name: 'platform_content', query: `${platform} content ${topic}`.trim() },
@@ -149,6 +174,13 @@ class HindsightService {
 
       // Sort by relevance score descending
       combined.sort((a, b) => (b.relevanceScore || 0) - (a.relevanceScore || 0));
+
+      console.log(`Relevant memories (${combined.length} retrieved across angles):`);
+      combined.forEach((m, idx) => {
+        console.log(`[#${idx + 1}] (${m.angle || 'recalled'}, score: ${m.relevanceScore}): ${m.content}`);
+      });
+      console.log(`========================================\n`);
+
       return combined;
     } catch (err) {
       console.error('[Hindsight Multi-Angle Recall Error]:', err.message);
