@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getDashboardStats } from '../services/api';
+import { useContent } from '../context/ContentContext';
 import { 
   BarChart3, 
   BrainCircuit, 
@@ -9,12 +10,18 @@ import {
   XCircle, 
   ArrowRight,
   RefreshCw,
-  AlertCircle
+  AlertCircle,
+  HelpCircle,
+  Linkedin,
+  Instagram,
+  Layers,
+  Flame
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import FormattedText from '../components/common/FormattedText';
 
 export default function Dashboard() {
+  const { platform, setPlatform } = useContent();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,7 +30,7 @@ export default function Dashboard() {
     setLoading(true);
     setError(null);
     try {
-      const res = await getDashboardStats();
+      const res = await getDashboardStats(platform);
       setStats(res.data.data);
     } catch (err) {
       console.error('Failed to fetch dashboard stats:', err);
@@ -35,37 +42,61 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchStats();
-  }, []);
+  }, [platform]);
 
   return (
     <div className="space-y-8">
       {/* Header & Value Proposition */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Audience Intelligence Dashboard
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-blue-600 tracking-wider uppercase">
+              AI Engagement & Intelligence Agent
+            </span>
+          </div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">
+            SocialPulse Dashboard
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            SocialMind learns what works for <span className="font-semibold text-slate-700">your specific audience</span> by retaining post outcomes and recalling past experiences.
+            "Understand your audience. Learn from your content. Create what matters."
           </p>
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Platform Pills */}
+          <div className="flex items-center bg-slate-100 p-1 rounded-lg border border-slate-200">
+            <button
+              onClick={() => setPlatform('LinkedIn')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                platform === 'LinkedIn'
+                  ? 'bg-white text-blue-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Linkedin className="h-3.5 w-3.5 text-blue-600" />
+              <span>LinkedIn</span>
+            </button>
+            <button
+              onClick={() => setPlatform('Instagram')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
+                platform === 'Instagram'
+                  ? 'bg-white text-pink-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Instagram className="h-3.5 w-3.5 text-pink-600" />
+              <span>Instagram</span>
+            </button>
+          </div>
+
           <button
             onClick={fetchStats}
             disabled={loading}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-xs font-medium transition-colors shadow-sm disabled:opacity-50"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh Data</span>
+            <span>Refresh</span>
           </button>
-          <Link
-            to="/create"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition-colors"
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Create Content</span>
-          </Link>
         </div>
       </div>
 
@@ -76,12 +107,48 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* HERO BANNER: "What Should I Post?" */}
+      <div className="p-6 rounded-xl bg-gradient-to-r from-blue-700 via-indigo-700 to-slate-900 text-white shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+        <div className="space-y-1.5 max-w-2xl">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-500/30 text-blue-200 border border-blue-400/30">
+              Hero Decision Engine
+            </span>
+            <span className="text-xs text-blue-200">Platform: {platform}</span>
+          </div>
+          <h2 className="text-xl font-bold tracking-tight">
+            Unsure What to Post on {platform} Today?
+          </h2>
+          <p className="text-xs text-blue-100/90 leading-relaxed">
+            SocialPulse synthesizes your historical engagement outcomes, active Hindsight memories, and current momentum trends to prescribe the optimal topic, format, and copy.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 shrink-0">
+          <Link
+            to="/what-to-post"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white hover:bg-blue-50 text-blue-900 text-xs font-bold shadow-md transition-all"
+          >
+            <HelpCircle className="h-4 w-4 text-blue-700" />
+            <span>What Should I Post?</span>
+            <ArrowRight className="h-3.5 w-3.5 text-blue-700" />
+          </Link>
+          <Link
+            to="/create"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600/40 hover:bg-blue-600/60 border border-white/20 text-white text-xs font-semibold transition-all"
+          >
+            <Sparkles className="h-4 w-4" />
+            <span>Content Studio</span>
+          </Link>
+        </div>
+      </div>
+
       {/* Primary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Total Posts */}
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
-            <span>Total Posts</span>
+            <span>Posts ({platform})</span>
             <BarChart3 className="h-4 w-4 text-slate-400" />
           </div>
           <div className="mt-3 flex items-baseline gap-2">
@@ -90,7 +157,7 @@ export default function Dashboard() {
             </span>
             <span className="text-xs text-slate-500 font-medium">in MongoDB</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">LinkedIn historical tracking</p>
+          <p className="text-[11px] text-slate-400 mt-1">Platform telemetry</p>
         </div>
 
         {/* Average Engagement */}
@@ -107,7 +174,7 @@ export default function Dashboard() {
               +{((stats?.avgEngagement ?? 0) - (stats?.benchmarkRate ?? 2.5)).toFixed(2)}% vs baseline
             </span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">Benchmark baseline: 2.50%</p>
+          <p className="text-[11px] text-slate-400 mt-1">Account baseline: 2.50%</p>
         </div>
 
         {/* Best Performing Content Type */}
@@ -124,10 +191,10 @@ export default function Dashboard() {
               Avg rate: <span className="font-semibold text-emerald-600">{stats?.bestContentAvg ?? 0}%</span>
             </p>
           </div>
-          <p className="text-[11px] text-slate-400 mt-1">Derived from real metrics</p>
+          <p className="text-[11px] text-slate-400 mt-1">Derived from {platform} metrics</p>
         </div>
 
-        {/* Audience Learning Status */}
+        {/* Retained Experiences */}
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
             <span>Retained Experiences</span>
@@ -147,16 +214,18 @@ export default function Dashboard() {
 
       {/* Main Grid: Recent Learning & How It Works */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Recent Learning (Actual Insights from Hindsight) */}
+        {/* Left Column: Recent Learning from Hindsight */}
         <div className="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-            <div>
-              <h2 className="text-base font-bold text-slate-900">Recent Learning</h2>
-              <p className="text-xs text-slate-500">Actual qualitative insights synthesized and retained in Hindsight.</p>
+            <div className="flex items-center gap-2">
+              <BrainCircuit className="h-4 w-4 text-blue-600" />
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900">
+                Recent Experiences Retained in Hindsight
+              </h2>
             </div>
             <Link
               to="/insights"
-              className="text-xs font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1"
+              className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1"
             >
               <span>View All</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -165,70 +234,110 @@ export default function Dashboard() {
 
           <div className="space-y-3">
             {loading ? (
-              <div className="py-8 text-center text-sm text-slate-400">Loading memories from Hindsight...</div>
-            ) : stats?.recentLearnings?.length > 0 ? (
-              stats.recentLearnings.map((item, idx) => {
-                const isPositive = !item.text.toLowerCase().includes('underperformed') && !item.text.toLowerCase().includes('ineffective');
-                return (
-                  <div
-                    key={item.id || idx}
-                    className="p-3.5 rounded-lg border border-slate-100 bg-slate-50/60 flex items-start gap-3"
-                  >
-                    <div className="mt-0.5 shrink-0">
-                      {isPositive ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                      ) : (
-                        <XCircle className="h-4 w-4 text-rose-500" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <FormattedText text={item.text} className="text-xs text-slate-700 leading-relaxed font-sans" />
-                    </div>
-                  </div>
-                );
-              })
-            ) : (
-              <div className="py-6 text-center text-xs text-slate-400">
-                No memories retained yet. Run seeding or log post performance.
+              <div className="py-8 text-center text-xs text-slate-400">
+                Retrieving active memories from Hindsight Cloud...
               </div>
+            ) : stats?.recentLearnings?.length > 0 ? (
+              stats.recentLearnings.map((item, idx) => (
+                <div
+                  key={item.id || idx}
+                  className="p-3.5 rounded-lg border border-slate-100 bg-slate-50/70 text-xs space-y-1.5"
+                >
+                  <div className="flex items-center justify-between text-[11px] text-slate-400">
+                    <span className="font-mono text-blue-700 font-medium">Memory #{idx + 1}</span>
+                    {item.date && (
+                      <span className="font-mono">{new Date(item.date).toLocaleDateString()}</span>
+                    )}
+                  </div>
+                  <FormattedText text={item.text} className="text-slate-800 leading-relaxed font-sans text-xs" />
+                </div>
+              ))
+            ) : (
+              <p className="text-xs text-slate-400 py-4 text-center">
+                No memories retained yet.
+              </p>
             )}
           </div>
         </div>
 
-        {/* Right Column: The Cognitive Cycle Demonstration */}
-        <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
-          <div className="border-b border-slate-100 pb-3">
-            <h2 className="text-base font-bold text-slate-900">The SocialMind Difference</h2>
-            <p className="text-xs text-slate-500">How Hindsight memory prevents generic AI output.</p>
+        {/* Right Column: Quick Navigation Hub */}
+        <div className="lg:col-span-5 space-y-5">
+          {/* Quick Access Card */}
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-3">
+              Intelligence Modules
+            </h2>
+
+            <div className="space-y-2.5">
+              <Link
+                to="/what-to-post"
+                className="flex items-center justify-between p-3 rounded-lg border border-blue-200 bg-blue-50/50 hover:bg-blue-50 transition-colors group"
+              >
+                <div className="flex items-center gap-3">
+                  <HelpCircle className="h-4 w-4 text-blue-600" />
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 block group-hover:text-blue-700">What Should I Post?</span>
+                    <span className="text-[11px] text-slate-500">Prescriptive next-post recommendation</span>
+                  </div>
+                </div>
+                <ArrowRight className="h-3.5 w-3.5 text-blue-600" />
+              </Link>
+
+              <Link
+                to="/create"
+                className="flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors group"
+              >
+                <div className="flex items-center gap-3">
+                  <Sparkles className="h-4 w-4 text-indigo-600" />
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 block group-hover:text-blue-700">Content Studio</span>
+                    <span className="text-[11px] text-slate-500">Captions, hooks, reels & carousels</span>
+                  </div>
+                </div>
+                <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600" />
+              </Link>
+
+              <Link
+                to="/audience"
+                className="flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors group"
+              >
+                <div className="flex items-center gap-3">
+                  <BarChart3 className="h-4 w-4 text-emerald-600" />
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 block group-hover:text-blue-700">Audience Intelligence</span>
+                    <span className="text-[11px] text-slate-500">Interests, preferred formats & weak topics</span>
+                  </div>
+                </div>
+                <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600" />
+              </Link>
+
+              <Link
+                to="/trends"
+                className="flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors group"
+              >
+                <div className="flex items-center gap-3">
+                  <Flame className="h-4 w-4 text-amber-500" />
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 block group-hover:text-blue-700">Trend Intelligence</span>
+                    <span className="text-[11px] text-slate-500">Bridge momentum trends to your audience</span>
+                  </div>
+                </div>
+                <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-blue-600" />
+              </Link>
+            </div>
           </div>
 
-          <div className="space-y-3 text-xs">
-            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200">
-              <span className="font-semibold text-slate-600 block mb-1">Standard LLM Tools:</span>
-              <p className="text-slate-500 font-mono text-[11px]">Prompt → Generic Post (No Memory)</p>
+          {/* Cognitive Learning Loop Concept */}
+          <div className="p-4 rounded-xl bg-slate-900 text-white space-y-2 text-xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 block">
+              Continuous Intelligence
+            </span>
+            <p className="text-slate-300 leading-relaxed text-[11px]">
+              "SocialPulse learns what works for YOUR audience and uses that knowledge to improve what you post next."
+            </p>
+            <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-400 font-mono">
+              MongoDB: Structured Telemetry • Hindsight: Experiential Memory
             </div>
-
-            <div className="p-3.5 rounded-lg bg-blue-50/70 border border-blue-200">
-              <span className="font-semibold text-blue-900 block mb-1">SocialMind with Hindsight:</span>
-              <div className="font-mono text-[11px] text-blue-800 space-y-1">
-                <div>1. Historical Experiences in Hindsight</div>
-                <div>2. RECALL memories matching new idea</div>
-                <div>3. REASON over winning vs failing patterns</div>
-                <div>4. GENERATE customized strategy & copy</div>
-                <div>5. Log live metrics & FEEDBACK</div>
-                <div>6. RETAIN new learning for future posts</div>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-2">
-            <Link
-              to="/create"
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold transition-colors shadow-sm"
-            >
-              <span>Test Memory-Driven Creation</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
           </div>
         </div>
       </div>

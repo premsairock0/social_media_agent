@@ -97,6 +97,67 @@ class HindsightService {
   }
 
   /**
+   * MULTI-ANGLE RECALL:
+   * Retrieves memories from multiple strategic perspectives:
+   * - Content & Platform angle
+   * - Engagement & Hook/CTA angle
+   * - Audience preference angle
+   * Deduplicates by memory ID and returns ranked insights with angle tags.
+   */
+  async recallMultiAngle({ topic = '', platform = 'LinkedIn', audience = 'Tech Community', goal = 'Engagement' }, perAngleLimit = 4) {
+    console.log(`[Hindsight] MULTI-ANGLE RECALL for: [Platform: ${platform}] [Topic: "${topic}"] [Goal: ${goal}]`);
+
+    const angles = [
+      { name: 'platform_content', query: `${platform} content ${topic}`.trim() },
+      { name: 'engagement_format', query: `${topic} engagement format hook CTA`.trim() },
+      { name: 'audience_preference', query: `${audience} audience response preference`.trim() },
+    ];
+
+    try {
+      const angleResults = await Promise.all(
+        angles.map(async (a) => {
+          try {
+            const res = await this.client.recall(this.bankId, a.query);
+            return (res.results || []).slice(0, perAngleLimit).map((item) => ({
+              id: item.id,
+              content: item.text,
+              relevanceScore: item.scores?.semantic ? Number(item.scores.semantic.toFixed(3)) : 1,
+              scores: item.scores,
+              context: item.context,
+              angle: a.name,
+              mentionedAt: item.mentioned_at,
+            }));
+          } catch (err) {
+            console.warn(`[Hindsight Multi-Angle Warning] Failed angle "${a.name}":`, err.message);
+            return [];
+          }
+        })
+      );
+
+      // Merge and deduplicate by memory ID
+      const seen = new Set();
+      const combined = [];
+
+      for (const list of angleResults) {
+        for (const item of list) {
+          if (!seen.has(item.id)) {
+            seen.add(item.id);
+            combined.push(item);
+          }
+        }
+      }
+
+      // Sort by relevance score descending
+      combined.sort((a, b) => (b.relevanceScore || 0) - (a.relevanceScore || 0));
+      return combined;
+    } catch (err) {
+      console.error('[Hindsight Multi-Angle Recall Error]:', err.message);
+      // Fallback to standard recall
+      return this.recallMemory(`${platform} ${topic} ${goal}`);
+    }
+  }
+
+  /**
    * REFLECT: Perform agentic synthesis over memories in the bank.
    * @param {string} prompt Reflection prompt
    * @returns {Promise<Object>} Reflection response synthesized by Hindsight

@@ -39,9 +39,12 @@ exports.recordAndLearn = async (req, res) => {
         style: req.body.style || 'Narrative Case Study',
         hook: req.body.hook || 'Key takeaways from our latest release',
         content: req.body.content || req.body.hook || 'Content text...',
-        platform: 'LinkedIn',
+        platform: req.body.platform || 'LinkedIn',
         status: 'published',
       });
+      await post.save();
+    } else if (req.body.platform && post.platform !== req.body.platform) {
+      post.platform = req.body.platform;
       await post.save();
     }
 

@@ -274,7 +274,7 @@ export default function StrategyView() {
             Strategy View & Optimal Posting Schedule
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Explore 3 tailored editorial angles, predictive insights, and exact timing windows to maximize LinkedIn reach.
+            Explore 3 tailored editorial angles, predictive insights, and exact timing windows to maximize {data.platform || 'LinkedIn'} reach.
           </p>
         </div>
 
@@ -807,7 +807,7 @@ export default function StrategyView() {
               <div className="flex items-center gap-2">
                 <Bookmark className="h-4 w-4 text-blue-600" />
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-900">
-                  Adapted LinkedIn Post Copy
+                  Adapted {data.platform || 'Social'} Post / Caption Copy
                 </h3>
               </div>
 

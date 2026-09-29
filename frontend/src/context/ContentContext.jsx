@@ -6,16 +6,27 @@ const ContentContext = createContext(null);
 const DEFAULT_IDEA = PREPROMPTS[0].idea;
 const DEFAULT_GOAL = PREPROMPTS[0].goal;
 const DEFAULT_AUDIENCE = PREPROMPTS[0].audience;
+const DEFAULT_PLATFORM = 'LinkedIn';
 
 const STORAGE_KEYS = {
-  IDEA: 'socialmind_idea',
-  GOAL: 'socialmind_goal',
-  AUDIENCE: 'socialmind_audience',
-  RESULT: 'socialmind_result',
+  IDEA: 'socialpulse_idea',
+  GOAL: 'socialpulse_goal',
+  AUDIENCE: 'socialpulse_audience',
+  PLATFORM: 'socialpulse_platform',
+  RESULT: 'socialpulse_result',
 };
 
 export function ContentProvider({ children }) {
-  // Initialize from localStorage so tab navigation or page refresh does not lose state
+  // Global selected platform: 'LinkedIn' or 'Instagram'
+  const [platform, setPlatformState] = useState(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.PLATFORM);
+      return saved === 'Instagram' || saved === 'LinkedIn' ? saved : DEFAULT_PLATFORM;
+    } catch {
+      return DEFAULT_PLATFORM;
+    }
+  });
+
   const [idea, setIdeaState] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.IDEA);
@@ -53,6 +64,15 @@ export function ContentProvider({ children }) {
   });
 
   // Persistent setters
+  const setPlatform = (val) => {
+    setPlatformState(val);
+    try {
+      localStorage.setItem(STORAGE_KEYS.PLATFORM, val);
+    } catch (e) {
+      console.warn('Failed to save platform to localStorage', e);
+    }
+  };
+
   const setIdea = (val) => {
     setIdeaState(val);
     try {
@@ -105,6 +125,7 @@ export function ContentProvider({ children }) {
   };
 
   const resetAll = () => {
+    setPlatform(DEFAULT_PLATFORM);
     setIdea(DEFAULT_IDEA);
     setGoal(DEFAULT_GOAL);
     setAudience(DEFAULT_AUDIENCE);
@@ -114,6 +135,8 @@ export function ContentProvider({ children }) {
   return (
     <ContentContext.Provider
       value={{
+        platform,
+        setPlatform,
         idea,
         setIdea,
         goal,

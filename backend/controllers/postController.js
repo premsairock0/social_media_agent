@@ -3,7 +3,13 @@ const PostMetric = require('../models/PostMetric');
 
 exports.getPosts = async (req, res) => {
   try {
-    const posts = await Post.find().sort({ createdAt: -1 });
+    const { platform } = req.query;
+    const filter = {};
+    if (platform && platform !== 'All') {
+      filter.platform = platform;
+    }
+
+    const posts = await Post.find(filter).sort({ createdAt: -1 });
     
     // Fetch metrics for each post
     const postsWithMetrics = await Promise.all(
@@ -25,8 +31,38 @@ exports.getPosts = async (req, res) => {
 
 exports.createPost = async (req, res) => {
   try {
-    const { content, topic, style, goal, hook, brandId, isSeed = false } = req.body;
-    const post = new Post({ content, topic, style, goal, hook, brandId, isSeed });
+    const { 
+      content, 
+      topic, 
+      style, 
+      goal, 
+      hook, 
+      platform = 'LinkedIn', 
+      format = 'post',
+      caption,
+      hashtags,
+      visualPrompt,
+      carouselSlides,
+      brandId, 
+      isSeed = false 
+    } = req.body;
+
+    const post = new Post({ 
+      content, 
+      topic, 
+      style, 
+      goal, 
+      hook, 
+      platform,
+      format,
+      caption: caption || content,
+      hashtags: hashtags || [],
+      visualPrompt,
+      carouselSlides,
+      brandId, 
+      isSeed 
+    });
+
     await post.save();
     res.status(201).json({ success: true, data: post });
   } catch (error) {
@@ -37,8 +73,16 @@ exports.createPost = async (req, res) => {
 exports.getDashboardStats = async (req, res) => {
   try {
     const hindsightService = require('../services/hindsightService');
-    const posts = await Post.find();
-    const metrics = await PostMetric.find();
+    const { platform } = req.query;
+    
+    const postFilter = {};
+    if (platform && platform !== 'All') {
+      postFilter.platform = platform;
+    }
+
+    const posts = await Post.find(postFilter);
+    const postIds = posts.map(p => p._id);
+    const metrics = await PostMetric.find(postIds.length > 0 ? { postId: { $in: postIds } } : {});
 
     const totalPosts = posts.length;
     let avgEngagement = 0;
@@ -58,10 +102,10 @@ exports.getDashboardStats = async (req, res) => {
       }
     }
 
-    let bestStyle = 'Technical Storytelling';
+    let bestStyle = platform === 'Instagram' ? 'Visual Carousel' : 'Technical Storytelling';
     let maxAvg = 0;
     for (const [style, data] of Object.entries(styleAgg)) {
-      const avg = data.totalRate / data.count;
+      const avg = data.totalRate / (data.count || 1);
       if (avg > maxAvg) {
         maxAvg = avg;
         bestStyle = style;
@@ -82,6 +126,7 @@ exports.getDashboardStats = async (req, res) => {
     return res.status(200).json({
       success: true,
       data: {
+        platform: platform || 'All',
         totalPosts,
         avgEngagement,
         bestContentType: bestStyle,

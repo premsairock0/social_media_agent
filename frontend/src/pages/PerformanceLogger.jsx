@@ -9,13 +9,15 @@ import {
   CheckCircle2, 
   ArrowRight, 
   AlertCircle,
-  Sparkles
+  Sparkles,
+  Linkedin,
+  Instagram
 } from 'lucide-react';
 
 export default function PerformanceLogger() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { result: contextResult, idea } = useContent();
+  const { result: contextResult, idea, platform: globalPlatform } = useContent();
 
   // If navigated from CreateContent/StrategyView, pre-populate post details, or fallback to ContentContext
   const prefill = location.state?.postData || (contextResult ? {
@@ -30,6 +32,7 @@ export default function PerformanceLogger() {
     style: prefill?.style || 'Technical Retrospective',
     hook: prefill?.hook || 'We deployed an autonomous AI testing agent that cut QA cycles by 80%...',
     content: prefill?.content || '',
+    platform: globalPlatform || 'LinkedIn',
     impressions: 12000,
     likes: 650,
     comments: 75,
@@ -52,6 +55,7 @@ export default function PerformanceLogger() {
         style: formData.style,
         hook: formData.hook,
         content: formData.content,
+        platform: formData.platform,
         impressions: Number(formData.impressions),
         likes: Number(formData.likes),
         comments: Number(formData.comments),
@@ -86,6 +90,37 @@ export default function PerformanceLogger() {
       {/* Form Card */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5">
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="text-xs font-semibold text-slate-600 mb-1.5 block">
+              Social Platform *
+            </label>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, platform: 'LinkedIn' })}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                  formData.platform === 'LinkedIn'
+                    ? 'bg-blue-50 text-blue-700 border-blue-300 shadow-xs'
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                <Linkedin className="h-3.5 w-3.5 text-blue-600" />
+                <span>LinkedIn</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, platform: 'Instagram' })}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                  formData.platform === 'Instagram'
+                    ? 'bg-pink-50 text-pink-700 border-pink-300 shadow-xs'
+                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                }`}
+              >
+                <Instagram className="h-3.5 w-3.5 text-pink-600" />
+                <span>Instagram</span>
+              </button>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>

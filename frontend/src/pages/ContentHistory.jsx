@@ -21,6 +21,7 @@ import {
   Copy,
   SlidersHorizontal,
   Linkedin,
+  Instagram,
   BrainCircuit,
   Filter,
   ArrowUpDown
@@ -36,6 +37,7 @@ export default function ContentHistory() {
   // Search & Filter state
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState('ALL'); // 'ALL' | 'HIGH' | 'LIVE' | 'SEED' | 'LOW'
+  const [platformFilter, setPlatformFilter] = useState('ALL'); // 'ALL' | 'LinkedIn' | 'Instagram'
   const [selectedStyle, setSelectedStyle] = useState('ALL');
   const [sortBy, setSortBy] = useState('newest'); // 'newest' | 'engagement_desc' | 'likes_desc' | 'comments_desc'
 
@@ -95,6 +97,7 @@ export default function ContentHistory() {
     if (activeTab === 'SEED' && !post.isSeed) return false;
 
     if (selectedStyle !== 'ALL' && post.style !== selectedStyle) return false;
+    if (platformFilter !== 'ALL' && (post.platform || 'LinkedIn') !== platformFilter) return false;
 
     return true;
   });
@@ -339,7 +342,48 @@ export default function ContentHistory() {
         {/* Filter Pills */}
         <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100">
           <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1">
-            Filter:
+            Platform:
+          </span>
+          <button
+            type="button"
+            onClick={() => setPlatformFilter('ALL')}
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
+              platformFilter === 'ALL'
+                ? 'bg-slate-800 text-white'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            All Platforms
+          </button>
+          <button
+            type="button"
+            onClick={() => setPlatformFilter('LinkedIn')}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
+              platformFilter === 'LinkedIn'
+                ? 'bg-blue-600 text-white'
+                : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+            }`}
+          >
+            <Linkedin className="h-3 w-3" />
+            <span>LinkedIn</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setPlatformFilter('Instagram')}
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
+              platformFilter === 'Instagram'
+                ? 'bg-pink-600 text-white'
+                : 'bg-pink-50 text-pink-700 hover:bg-pink-100'
+            }`}
+          >
+            <Instagram className="h-3 w-3" />
+            <span>Instagram</span>
+          </button>
+
+          <span className="text-slate-300 mx-1">|</span>
+
+          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mr-1">
+            Outcome:
           </span>
           <button
             type="button"
@@ -517,6 +561,22 @@ export default function ContentHistory() {
                                 }`}
                               ></span>
                               {post.isSeed ? 'Historical Seed' : 'Live Experience'}
+                            </span>
+
+                            {/* Platform Badge */}
+                            <span
+                              className={`text-[10px] font-semibold tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1 shrink-0 ${
+                                post.platform === 'Instagram'
+                                  ? 'bg-pink-50 text-pink-700 border border-pink-200'
+                                  : 'bg-blue-50 text-blue-700 border border-blue-200'
+                              }`}
+                            >
+                              {post.platform === 'Instagram' ? (
+                                <Instagram className="h-3 w-3 text-pink-600" />
+                              ) : (
+                                <Linkedin className="h-3 w-3 text-blue-600" />
+                              )}
+                              <span>{post.platform || 'LinkedIn'}</span>
                             </span>
                           </div>
                           <p className="text-slate-500 text-xs line-clamp-1 leading-relaxed font-sans">
